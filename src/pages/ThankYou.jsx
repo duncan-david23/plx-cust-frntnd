@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router-dom';
-import plangex_logo_black from '../assets/plangeX_logo.png'; 
+import plangex_logo_black from '../assets/PlangeX_logo.png'; 
 
 const ThankYou = () => {
   const [userEmail, setUserEmail] = useState('');
