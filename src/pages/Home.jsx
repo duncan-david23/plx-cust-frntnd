@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import plangex_logo from '../assets/plangeX_logo_white.png'; 
-import plangex_logo_black from '../assets/plangeX_logo.png'; 
+import plangex_logo from '../assets/PlangeX_logo_white.png'; 
+import plangex_logo_black from '../assets/PlangeX_logo.png'; 
 import { 
   ArrowRight, 
   Sparkles, 

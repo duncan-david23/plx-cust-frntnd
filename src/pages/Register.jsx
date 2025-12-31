@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import plangex_logo from '../assets/plangeX_logo_white.png'; 
+import plangex_logo from '../assets/PlangeX_logo_white.png'; 
 import { 
   ArrowRight, 
   Sparkles, 

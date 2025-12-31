@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { products } from '../data/products';
 import { formatCurrency } from '../utils/currency';
-import plangex_logo_black from '../assets/plangeX_logo.png'; 
+import plangex_logo_black from '../assets/PlangeX_logo.png'; 
 import { 
   Search, 
   Heart, 
