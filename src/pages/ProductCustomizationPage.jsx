@@ -677,7 +677,7 @@ const downloadPreview = async () => {
 
   // Design Upload Component
   const DesignUpload = () => (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 h-auto sm:h-[600px] overflow-y-auto">
+    <div className="bg-gray-200 text-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 h-auto sm:h-[600px] overflow-y-auto">
       <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center space-x-2 text-sm sm:text-base">
         <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
         <span>Upload Your Design</span>
@@ -805,7 +805,7 @@ const downloadPreview = async () => {
 
   // Design Library Component
   const DesignLibrary = () => (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
+    <div className="bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
       <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center space-x-2 text-sm sm:text-base">
         <Image className="w-4 h-4 sm:w-5 sm:h-5" />
         <span>Your Designs ({uploadedDesigns.length})</span>
