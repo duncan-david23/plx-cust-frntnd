@@ -78,7 +78,7 @@ const handleSubmit = async (e) => {
         console.log(data.user);
         setMsg('User has been successfully registered');
         localStorage.setItem('userEmail', data.user.email);
-        localStorage.setItem('userName', formData.fullName);
+        
     //     console.log(data.user.id,  data.user.email, formData.fullName, formData.referralCode);
 
     //   const { data: { session } } = await supabase.auth.getSession()
