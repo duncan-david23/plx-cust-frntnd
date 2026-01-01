@@ -97,6 +97,7 @@ const AccountPage = () => {
         });
        
       }
+      localStorage.setItem('userName', response.data.full_name || 'username');
     } catch (error) {
       console.error("❌ Error fetching user data:", error.response?.data || error.message);
     } finally {
