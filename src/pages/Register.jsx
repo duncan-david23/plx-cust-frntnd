@@ -93,7 +93,7 @@ const handleSubmit = async (e) => {
 
        
   
-      window.location.href = '/products';
+      window.location.href = '/login';
     } catch (error) {
       console.error('Error signing in:', error);
       setMsg( 'An error occurred during sign up, please check your details and try again.');
