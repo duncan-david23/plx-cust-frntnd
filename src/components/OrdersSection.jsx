@@ -71,7 +71,7 @@ const OrdersSection = () => {
         }));
 
         setOrders(transformedOrders);
-        localStorage.setItem('userName',transformedOrders.map(order => order.customer_name)[0])
+        
 
 
         // Update pagination info if available from backend

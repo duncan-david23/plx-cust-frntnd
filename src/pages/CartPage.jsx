@@ -8,6 +8,7 @@ import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
 import {PaystackButton} from 'react-paystack';
 import toast from 'react-hot-toast';
+import { use } from 'react';
 
 const CartPage = () => {
   const { state, dispatch } = useApp();
@@ -49,6 +50,7 @@ const CartPage = () => {
   const total = subtotal + shipping;
 
   
+
 
 
 
