@@ -326,7 +326,7 @@ const ProductsPage = () => {
                 </div>
 
                 {/* Features */}
-                <div className="pt-6 border-t border-gray-200">
+                {/* <div className="pt-6 border-t border-gray-200">
                   <h3 className="font-medium text-gray-900 mb-3">Features</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {product.features.map((feature, index) => (
@@ -336,7 +336,7 @@ const ProductsPage = () => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Trust Badges */}
                 <div className="flex items-center justify-center space-x-6 pt-6 border-t border-gray-200">

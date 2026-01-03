@@ -30,6 +30,7 @@ import {
   Image,
   Loader2
 } from 'lucide-react';
+import { use } from 'react';
 
 const API_BASE_URL = 'https://plx-bckend.onrender.com/api/users';
 
@@ -387,6 +388,7 @@ const ProductCustomizationPage = () => {
     }
   };
 
+
   // Download preview
 const downloadPreview = async () => {
   try {
@@ -686,7 +688,7 @@ const downloadPreview = async () => {
       {uploading && (
         <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-blue-900">Processing Image...</span>
+            <span className="text-sm font-medium text-blue-900">Processing design...</span>
             <span className="text-sm font-medium text-blue-700">{uploadProgress}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -696,7 +698,7 @@ const downloadPreview = async () => {
             ></div>
           </div>
           <p className="text-xs text-blue-700 mt-2">
-            Processing image. Please wait...
+            Processing design. Please wait...
           </p>
         </div>
       )}
