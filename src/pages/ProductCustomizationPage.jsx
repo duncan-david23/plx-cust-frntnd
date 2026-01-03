@@ -370,23 +370,46 @@ const ProductCustomizationPage = () => {
   }, [dispatch]);
 
   // Capture preview image
-  const capturePreviewImage = async () => {
-    if (!productRef.current) return null;
-    
-    try {
-      const dataUrl = await htmlToImage.toPng(productRef.current, {
-        filter: (node) => {
-          return !node.classList?.contains('grid-overlay');
-        },
-        quality: 1,
-        pixelRatio: 2,
-      });
-      return dataUrl;
-    } catch (err) {
-      console.error('Preview capture failed:', err);
-      return null;
-    }
-  };
+const capturePreviewImage = async () => {
+  if (!productRef.current) return null;
+
+  try {
+    // Wait for fonts
+    await document.fonts.ready;
+
+    // Force reflow
+    productRef.current.offsetHeight;
+
+    // Wait for paints
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+
+    const options = {
+      filter: (node) => !node.classList?.contains('grid-overlay'),
+      quality: 1,
+      pixelRatio: window.devicePixelRatio || 2,
+      backgroundColor: '#ffffff', // Match your actual product background
+      cacheBust: true,
+      imageTimeout: 20000, // Longer timeout for slow connections/images
+    };
+
+    // First capture (silent - often blank on iOS first try)
+    await htmlToImage.toPng(productRef.current, options);
+
+    // Small delay + extra frame to ensure rasterization
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(requestAnimationFrame);
+
+    // Second capture - this one will be correct
+    const dataUrl = await htmlToImage.toPng(productRef.current, options);
+
+    return dataUrl;
+  } catch (err) {
+    console.error('Preview capture failed:', err);
+    return null;
+  }
+};
 
 
   // Download preview

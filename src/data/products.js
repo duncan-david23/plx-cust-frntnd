@@ -138,7 +138,7 @@ export const products = [
     name: "Tshirt_gray-ash_1-side",
     category: "tshirts",
     price: 114.99,
-    image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767438385/gildan-ultra-cotton-adult-t-shirt-p653-348991_thumb_h8p7o5.jpg",
+    image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767451252/mens-gildan-short-sleeve-heavy-cotton-tshirt-ash-grey_sjxphd.webp",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
