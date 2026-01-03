@@ -3,8 +3,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router-dom';
 import plangex_logo_black from '../assets/PlangeX_logo.png'; 
+import { useUser } from '../context/UserContext';
 
 const ThankYou = () => {
+  const { user } = useUser();
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [selectedMessage, setSelectedMessage] = useState('');
@@ -27,26 +29,36 @@ const ThankYou = () => {
   };
 
   const thankYouMessages = [
-    "Hey {{name}} 😄 order complete and good vibes only! Your design is safe with us now. Go grab some water, relax, and let us handle the rest. We're on it 💪✨",
-    "{{name}}, yay! 🎉 You did that. Your order went through perfectly, and we're already excited to work on it. From here on, it's care, creativity, and good energy all the way 🤍",
-    "Hi {{name}} 😊 payment successful and peace restored. Your custom piece is officially in our hands, and we promise to treat it like something special (because it is).",
-    "Guess what, {{name}}? 😌 Everything went smoothly. Your order is confirmed, your design is safe, and we're already getting to work. You can relax now—we've got you.",
-    "{{name}}, deep breath 😮‍💨✨ it's done. Your order is locked in, and we're carefully bringing your idea to life. No stress, no worries, just good things loading…",
-    "Hey {{name}} 🤍 thank you for trusting us! Your order is confirmed and moving forward beautifully. We're taking our time to get every detail right, just for you.",
-    "Hi {{name}} 🌸 your order is secure and officially in progress. Sit back, smile a little, and let us do what we do best. Something nice is on the way.",
-    "{{name}}, nice choice 😄👌 Your order went through successfully, and your design journey has started. We'll handle the hard part while you enjoy the anticipation.",
-    "Good news, {{name}} 🎈 everything is set! Your custom design is now in production mode, handled with care and attention. You're in very good hands.",
-    "Hey {{name}} ✨ order confirmed and happiness activated. Thank you for choosing us. We're already working to make sure this feels worth it the moment it arrives 🤍"
-  ];
+  "Thank you for your order, {{name}} ✨ May today bring you calm thoughts, good moments, and small wins that make you smile. Something special is on the way just for you 🤍",
+  
+  "{{name}}, thank you for ordering 🌸 Wishing you a day filled with ease, positive energy, and little reasons to be happy. We can’t wait to welcome you back again 😊",
+  
+  "Order received, {{name}} 💫 May your day feel lighter, brighter, and full of good vibes. Thank you for choosing us, we hope this is the start of many beautiful orders.",
+  
+  "Thank you, {{name}} 🤍 Wishing you peace of mind, joyful moments, and a smile that stays with you all day. We’ll be happy to see you again anytime ✨",
+  
+  "{{name}}, your order means a lot 🌼 May today surprise you with kindness, progress, and good energy. Looking forward to creating more beautiful things with you again.",
+  
+  "Thank you for your order, {{name}} 😊 May your day be productive, peaceful, and filled with reasons to smile. We hope to serve you again very soon 🤍",
+  
+  "{{name}}, thanks for choosing us ✨ Sending you warm wishes, positive thoughts, and a gentle reminder that good things are always on the way. Come back anytime 🌸",
+  
+  "Order confirmed, {{name}} 🌈 May today bring you confidence, happiness, and a calm heart. Thank you for being here, we’d love to see you again.",
+  
+  "Thank you, {{name}} 💖 Wishing you a smooth day, good news, and moments that make you smile without trying. Your next visit will always be welcome.",
+  
+  "{{name}}, we appreciate your order ✨ May your day feel beautiful, your plans go well, and your smile come easily. Looking forward to your next order 🤍"
+];
+
 
   useEffect(() => {
-    // Get user email from localStorage
-    const email = localStorage.getItem('userEmail') || '';
+    // Get user email from context
+    const email = user.email || '';
     setUserEmail(email);
     
     // Extract name from email (before @)
     if (email) {
-      const name = localStorage.getItem('userName') || email.split('@')[0];
+      const name = user.username || email.split('@')[0];
       // Format name with capitalized first letter
       const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
       setUserName(formattedName);

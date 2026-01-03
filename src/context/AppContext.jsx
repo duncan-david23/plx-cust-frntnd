@@ -1,32 +1,95 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 
 const AppContext = createContext();
 
-const initialState = {
-  currentProduct: null,
-  customization: {
-    selectedProduct: null,
-    selectedSizes: [],
-    quantity: 1,
-    customInstructions: '',
-    uploadedDesigns: [],
-    activeDesign: null,
-    productSize: 'M'
-  },
-  cart: [],
-  orders: []
+// Helper function to safely store data without base64 images
+const sanitizeCartForStorage = (cart) => {
+  return cart.map(item => ({
+    ...item,
+    // Remove base64 preview image if we have Cloudinary URL
+    originalPreviewBase64: item.previewImage?.startsWith('https://res.cloudinary.com') 
+      ? null 
+      : item.originalPreviewBase64,
+    // Sanitize uploaded designs
+    uploadedDesigns: item.uploadedDesigns.map(design => ({
+      ...design,
+      // Remove base64 URLs if we have Cloudinary URL
+      url: design.cloudinaryUrl || design.url,
+      originalBase64: null, // Always remove original base64
+      cloudinaryUrl: design.cloudinaryUrl || null
+    }))
+  }));
 };
 
+// Get initial state from localStorage
+const getInitialState = () => {
+  try {
+    const savedCart = localStorage.getItem('userCart');
+    const savedOrders = localStorage.getItem('userOrders');
+    
+    // Parse and sanitize cart data on load
+    let cart = [];
+    if (savedCart) {
+      const parsedCart = JSON.parse(savedCart);
+      // Remove any base64 data that might have been stored previously
+      cart = parsedCart.map(item => ({
+        ...item,
+        originalPreviewBase64: null, // Clear base64 on load
+        uploadedDesigns: item.uploadedDesigns?.map(design => ({
+          ...design,
+          originalBase64: null // Clear base64 on load
+        })) || []
+      }));
+    }
+
+    return {
+      currentProduct: null,
+      customization: {
+        selectedProduct: null,
+        selectedSizes: [],
+        quantity: 1,
+        customInstructions: '',
+        uploadedDesigns: [],
+        activeDesign: null,
+        productSize: 'M'
+      },
+      cart,
+      orders: savedOrders ? JSON.parse(savedOrders) : []
+    };
+  } catch (error) {
+    console.error('Error loading from localStorage:', error);
+    return {
+      currentProduct: null,
+      customization: {
+        selectedProduct: null,
+        selectedSizes: [],
+        quantity: 1,
+        customInstructions: '',
+        uploadedDesigns: [],
+        activeDesign: null,
+        productSize: 'M'
+      },
+      cart: [],
+      orders: []
+    };
+  }
+};
+
+const initialState = getInitialState();
+
 function appReducer(state, action) {
+  let newState;
+  
   switch (action.type) {
     case 'SET_CURRENT_PRODUCT':
-      return {
+      newState = {
         ...state,
         currentProduct: action.payload
       };
+      break;
 
     case 'START_CUSTOMIZATION':
-      return {
+      newState = {
         ...state,
         customization: {
           ...initialState.customization,
@@ -37,19 +100,21 @@ function appReducer(state, action) {
           productSize: action.payload.sizes[0] || 'M'
         }
       };
+      break;
 
     case 'UPDATE_CUSTOMIZATION':
-      return {
+      newState = {
         ...state,
         customization: {
           ...state.customization,
           ...action.payload
         }
       };
+      break;
 
     case 'ADD_DESIGN':
       const newDesigns = [...state.customization.uploadedDesigns, action.payload];
-      return {
+      newState = {
         ...state,
         customization: {
           ...state.customization,
@@ -57,9 +122,10 @@ function appReducer(state, action) {
           activeDesign: action.payload.id
         }
       };
+      break;
 
     case 'UPDATE_DESIGN':
-      return {
+      newState = {
         ...state,
         customization: {
           ...state.customization,
@@ -70,12 +136,13 @@ function appReducer(state, action) {
           )
         }
       };
+      break;
 
     case 'REMOVE_DESIGN':
       const filteredDesigns = state.customization.uploadedDesigns.filter(
         design => design.id !== action.payload
       );
-      return {
+      newState = {
         ...state,
         customization: {
           ...state.customization,
@@ -85,18 +152,20 @@ function appReducer(state, action) {
             : state.customization.activeDesign
         }
       };
+      break;
 
     case 'SET_ACTIVE_DESIGN':
-      return {
+      newState = {
         ...state,
         customization: {
           ...state.customization,
           activeDesign: action.payload
         }
       };
+      break;
 
     case 'ADD_TO_CART':
-      // Prepare design data for storage with Cloudinary support
+      // Prepare design data for storage - Cloudinary URLs only
       const designsForCart = state.customization.uploadedDesigns.map(design => {
         const designData = {
           id: design.id,
@@ -111,7 +180,6 @@ function appReducer(state, action) {
           uploadDate: design.uploadDate
         };
 
-        // Add appropriate URL based on design type and availability
         if (design.isText) {
           return {
             ...designData,
@@ -124,15 +192,17 @@ function appReducer(state, action) {
             originalBase64: null
           };
         } else {
+          // Use Cloudinary URL if available, otherwise use the URL
+          const urlToStore = design.cloudinaryUrl || design.url;
           return {
             ...designData,
             text: null,
             fontSize: null,
             fontFamily: null,
             color: null,
-            url: design.url, // Could be base64 or Cloudinary URL
+            url: urlToStore,
             cloudinaryUrl: design.cloudinaryUrl || null,
-            originalBase64: design.originalBase64 || null
+            originalBase64: null // Never store base64 in cart
           };
         }
       });
@@ -144,13 +214,12 @@ function appReducer(state, action) {
         quantity: state.customization.quantity,
         size: state.customization.productSize,
         customInstructions: state.customization.customInstructions,
-        previewImage: action.payload?.previewImage || null, // Cloudinary URL for preview
-        originalPreviewBase64: action.payload?.originalPreviewBase64 || null, // Base64 fallback
-        uploadedDesigns: designsForCart, // Store all design data with Cloudinary URLs
+        previewImage: action.payload?.previewImage || null,
+        originalPreviewBase64: null, // Don't store base64 in localStorage
+        uploadedDesigns: designsForCart,
         uploadedDesignsCount: state.customization.uploadedDesigns.length,
         price: state.customization.selectedProduct.price * state.customization.quantity,
         timestamp: new Date().toISOString(),
-        // Keep original product reference for navigation if needed
         originalProduct: {
           id: state.customization.selectedProduct.id,
           category: state.customization.selectedProduct.category,
@@ -158,14 +227,19 @@ function appReducer(state, action) {
         }
       };
       
-      return {
+      newState = {
         ...state,
         cart: [...state.cart, cartItem],
         customization: initialState.customization
       };
+      
+      // Sanitize and save to localStorage
+      const sanitizedCart = sanitizeCartForStorage(newState.cart);
+      localStorage.setItem('userCart', JSON.stringify(sanitizedCart));
+      break;
 
     case 'UPDATE_CART_ITEM_QUANTITY':
-      return {
+      newState = {
         ...state,
         cart: state.cart.map(item =>
           item.id === action.payload.itemId
@@ -177,65 +251,119 @@ function appReducer(state, action) {
             : item
         )
       };
+      
+      // Sanitize and save to localStorage
+      const sanitizedCartUpdate = sanitizeCartForStorage(newState.cart);
+      localStorage.setItem('userCart', JSON.stringify(sanitizedCartUpdate));
+      break;
 
     case 'REMOVE_FROM_CART':
-      return {
+      newState = {
         ...state,
         cart: state.cart.filter(item => item.id !== action.payload)
       };
+      
+      if (newState.cart.length > 0) {
+        const sanitizedCartRemove = sanitizeCartForStorage(newState.cart);
+        localStorage.setItem('userCart', JSON.stringify(sanitizedCartRemove));
+      } else {
+        localStorage.removeItem('userCart');
+      }
+      break;
 
-    // ✅ ADD THIS NEW ACTION TO CLEAR THE CART
     case 'CLEAR_CART':
-      return {
+      newState = {
         ...state,
-        cart: [] // Simply empty the cart array
+        cart: []
       };
+      
+      localStorage.removeItem('userCart');
+      break;
 
     case 'CREATE_ORDER':
+      // Ensure no base64 data in orders either
+      const cleanOrderItems = state.cart.map(item => ({
+        ...item,
+        originalPreviewBase64: null,
+        uploadedDesigns: item.uploadedDesigns.map(design => ({
+          ...design,
+          originalBase64: null
+        }))
+      }));
+
       const newOrder = {
         id: Date.now(),
-        items: state.cart.map(item => ({
-          ...item,
-          // Make sure designs are included in the order with Cloudinary URLs
-          uploadedDesigns: item.uploadedDesigns.map(design => ({
-            ...design,
-            // For images: prioritize Cloudinary URL, fallback to base64
-            imageUrl: design.cloudinaryUrl || design.url || null,
-            isCloudinary: !!design.cloudinaryUrl,
-            // For text: include all text properties
-            textProperties: design.isText ? {
-              text: design.text,
-              fontSize: design.fontSize,
-              fontFamily: design.fontFamily,
-              color: design.color
-            } : null
-          }))
-        })),
+        items: cleanOrderItems,
         total: state.cart.reduce((sum, item) => sum + item.price, 0),
         status: 'confirmed',
         orderDate: new Date().toISOString(),
         shippingAddress: action.payload.shippingAddress,
         customerInfo: action.payload.customerInfo
       };
-      return {
+      
+      newState = {
         ...state,
         orders: [...state.orders, newOrder],
-        cart: [] // This already clears cart in CREATE_ORDER action
+        cart: []
       };
+      
+      // Save orders and clear cart
+      localStorage.setItem('userOrders', JSON.stringify(newState.orders));
+      localStorage.removeItem('userCart');
+      break;
 
     case 'CLEAR_CUSTOMIZATION':
-      return {
+      newState = {
         ...state,
         customization: initialState.customization
       };
+      break;
 
     default:
-      return state;
+      newState = state;
+      break;
   }
+  
+  return newState;
 }
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Optional cleanup on load - ensure no base64 in localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('userCart');
+    if (savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        let hasBase64 = false;
+        
+        // Check for base64 data
+        parsedCart.forEach(item => {
+          if (item.originalPreviewBase64 || 
+              item.uploadedDesigns?.some(design => design.originalBase64)) {
+            hasBase64 = true;
+          }
+        });
+        
+        // Clean up if base64 found
+        if (hasBase64) {
+          const cleanCart = sanitizeCartForStorage(parsedCart);
+          localStorage.setItem('userCart', JSON.stringify(cleanCart));
+        }
+      } catch (error) {
+        console.error('Error cleaning localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Sync localStorage on cart changes
+  useEffect(() => {
+    if (state.cart.length > 0) {
+      const sanitizedCart = sanitizeCartForStorage(state.cart);
+      localStorage.setItem('userCart', JSON.stringify(sanitizedCart));
+    }
+  }, [state.cart]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

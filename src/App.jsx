@@ -14,6 +14,7 @@ import AccountPage from './pages/AccountPage';
 import AuthWrapper from './components/AuthWrapper'
 import { useLocation } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
+import { UserProvider } from './context/UserContext'
 
 
 
@@ -42,7 +43,7 @@ const location = useLocation()
     <>
     <Toaster />
     <AppProvider>
-     
+      <UserProvider>
         <div className="App">
           <Routes>
             <Route path="/products" element={
@@ -75,6 +76,7 @@ const location = useLocation()
           </Routes>
         </div>
       
+    </UserProvider>
     </AppProvider>
     </>
   );

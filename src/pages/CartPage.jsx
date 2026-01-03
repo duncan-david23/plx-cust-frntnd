@@ -9,11 +9,12 @@ import { supabase } from '../lib/supabaseClient';
 import {PaystackButton} from 'react-paystack';
 import toast from 'react-hot-toast';
 import { use } from 'react';
+import { useUser } from '../context/UserContext';
 
 const CartPage = () => {
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
-
+  const { user } = useUser();
 
   const publicKey = 'pk_test_3bdc97b024233bb522a068bfefbbe9292322b0fa';
   const notify = () => toast.error('Transaction was not completed, please try again.');
@@ -58,7 +59,7 @@ const CartPage = () => {
 
 
 const componentProps = {
-    email: localStorage.getItem('userEmail'),
+    email: user.email,
     amount: total * 100, // Paystack expects amount in kobo
     publicKey: publicKey,
     currency: 'GHS',
@@ -138,7 +139,8 @@ const submitOrderToBackend = async () => {
    
   } catch (error) {
     console.error('Error:', error);
-    alert('❌ Failed to place order. Cart was not cleared.');
+   toast.error('Failed to submit order. Please complete your profile setup.');
+   alert('Failed to submit order. Please complete your profile setup.');
     throw error;
   }
 };
@@ -236,7 +238,7 @@ const submitOrderToBackend = async () => {
                         <p><span className="font-medium">Size:</span> {item.size}</p>
                       </div>
                       <div className="space-y-1">
-                        <p>
+                        {/* <p>
                           <span className="font-medium">Designs:</span> {item.uploadedDesignsCount}
                           {item.uploadedDesignsCount > 0 && (
                             <button
@@ -246,11 +248,11 @@ const submitOrderToBackend = async () => {
                               View Details
                             </button>
                           )}
-                        </p>
-                        <div className="flex items-center space-x-1">
+                        </p> */}
+                        {/* <div className="flex items-center space-x-1">
                           <span className="font-medium">Status:</span>
                           <span className="text-green-600">Ready for production</span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     
@@ -323,7 +325,7 @@ const submitOrderToBackend = async () => {
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <button
+                        {/* <button
                           onClick={() => viewDesignDetails(item.uploadedDesigns)}
                           disabled={item.uploadedDesigns.length === 0}
                           className={`px-3 py-1 text-sm rounded-lg transition-colors ${
@@ -333,7 +335,7 @@ const submitOrderToBackend = async () => {
                           }`}
                         >
                           View Designs
-                        </button>
+                        </button> */}
                         <button
                           onClick={() => removeFromCart(item.id)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -367,11 +369,11 @@ const submitOrderToBackend = async () => {
                 
                 {shipping === 0 ? (
                   <p className="text-sm text-green-600 bg-green-50 p-2 rounded-lg">
-                    🎉 Free shipping applied! You saved {formatCurrency(9.99)}
+                    🎉 Free shipping applied! You saved {formatCurrency(35)}
                   </p>
                 ) : (
                   <p className="text-sm text-gray-500">
-                    Add {formatCurrency(100 - subtotal)} more for free shipping
+                    Add {formatCurrency(500 - subtotal)} more for free shipping
                   </p>
                 )}
                 
