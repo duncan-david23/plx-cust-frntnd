@@ -248,7 +248,7 @@ const ForgotPassword = () => {
 
                 {/* Additional Actions */}
                 <div className="space-y-4">
-                  <button
+                  {/* <button
                     onClick={() => {
                       setEmailSent(false);
                       setMsg('');
@@ -256,7 +256,7 @@ const ForgotPassword = () => {
                     className="w-full bg-gray-700/50 border border-gray-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-700 transition-all duration-200"
                   >
                     Try Another Email
-                  </button>
+                  </button> */}
                   
                   <button
                     onClick={() => navigate('/login')}

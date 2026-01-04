@@ -43,7 +43,7 @@ const ThankYou = () => {
   
   "{{name}}, thanks for choosing us ✨ Sending you warm wishes, positive thoughts, and a gentle reminder that good things are always on the way. Come back anytime 🌸",
   
-  "Order confirmed, {{name}} 🌈 May today bring you confidence, happiness, and a calm heart. Thank you for being here, we’d love to see you again.",
+  "Order confirmed, {{name}} , May today bring you confidence, happiness, and a calm heart. Thank you for being here, we’d love to see you again.",
   
   "Thank you, {{name}} 💖 Wishing you a smooth day, good news, and moments that make you smile without trying. Your next visit will always be welcome.",
   

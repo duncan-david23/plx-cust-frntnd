@@ -48,6 +48,7 @@ const ProductCustomizationPage = () => {
   const [editingText, setEditingText] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   const fileInputRef = useRef(null);
   const productRef = useRef(null);
@@ -415,6 +416,7 @@ const capturePreviewImage = async () => {
   // Download preview
 const downloadPreview = async () => {
   try {
+    setIsDownloading(true);
     // Wait a short moment to ensure all layers/rendering are ready
     await new Promise((resolve) => setTimeout(resolve, 300)); // 300ms delay
 
@@ -441,6 +443,8 @@ const downloadPreview = async () => {
   } catch (error) {
     console.error(error);
     alert('Something went wrong generating the image');
+  } finally {
+    setIsDownloading(false);
   }
 };
 
@@ -1118,10 +1122,10 @@ const downloadPreview = async () => {
                       <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                     )}
                     <span className="hidden sm:inline">
-                      {uploading ? 'Uploading...' : 'Download Preview'}
+                      {isDownloading ? 'Downloading...' : 'Download Preview'}
                     </span>
                     <span className="sm:hidden">
-                      {uploading ? '...' : 'Download'}
+                      {isDownloading ? '...' : 'Download'}
                     </span>
                   </motion.button>
                 </div>
