@@ -382,9 +382,7 @@ const submitOrderToBackend = async () => {
                     <span>Total</span>
                     <span>{formatCurrency(total)}</span>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Including any applicable taxes
-                  </p>
+                 
                 </div>
               </div>
 

@@ -245,10 +245,10 @@ const ProductsPage = () => {
                       <button
                         key={index}
                         onClick={() => toggleSizeSelection(size)}
-                        className={`py-3 px-4 border rounded-lg text-center transition-all ${
+                        className={`py-3 border rounded-lg text-center transition-all ${
                           selectedSizes.includes(size)
-                            ? 'border-gray-900 bg-gray-900 text-white'
-                            : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                            ? 'border-gray-900  bg-gray-900 text-white'
+                            : 'border-gray-300  hover:border-gray-400 text-gray-700'
                         }`}
                       >
                         {size}

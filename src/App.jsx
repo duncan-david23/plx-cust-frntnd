@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import HomePage from './pages/Home';
 import ProductsPage from './pages/ProductsPage';
+import DesignerPage from './pages/DesignerPage';
 import ProductCustomizationPage from './pages/ProductCustomizationPage';
 import CartPage from './pages/CartPage';
 import ThankYou from './pages/ThankYou';
@@ -54,6 +55,11 @@ const location = useLocation()
             <Route path="/customize" element={
               <AuthWrapper>
               <ProductCustomizationPage />
+              </AuthWrapper>
+              } />
+            <Route path="/design-tool" element={
+              <AuthWrapper>
+              <DesignerPage />
               </AuthWrapper>
               } />
             <Route path="/cart" element={

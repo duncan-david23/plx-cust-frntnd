@@ -962,7 +962,7 @@ const downloadPreview = async () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+            <div className="flex flex-row-reverse gap-[20px] items-center space-x-2 sm:space-x-3 flex-shrink-0">
               <motion.button
                 whileHover={{ scale: uploading ? 1 : 1.05 }}
                 whileTap={{ scale: uploading ? 1 : 0.95 }}
@@ -988,6 +988,14 @@ const downloadPreview = async () => {
                   </>
                 )}
               </motion.button>
+              <button
+                onClick={()=> window.open('/design-tool', '_blank')}
+                className="p-2 hover:bg-blue-700 rounded-lg transition-colors bg-blue-600 text-white flex-shrink-0"
+                disabled={uploading}
+                
+              >
+                Design Tool
+              </button>
             </div>
           </div>
         </div>
