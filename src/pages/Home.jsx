@@ -10,26 +10,22 @@ import {
   Move, 
   ZoomIn, 
   RotateCw, 
-  Truck, 
-  Shield,
   Star,
   ChevronDown,
   X,
   Play,
-  Smartphone,
-  Palette,
-  Layers
+  Smartphone
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import mockupImage from '../assets/mockup.png'
 import mockupImage2 from '../assets/sweatshirt_mockup.png'
 
 const CustomProductPlatform = () => {
   const [activeFAQ, setActiveFAQ] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const videoRef = useRef(null);
-
   const navigate = useNavigate();
+
+  const videoUrl = "https://res.cloudinary.com/dxu2myqmz/video/upload/v1767720049/0106_ochfr8.mp4";
 
   const features = [
     {
@@ -74,27 +70,7 @@ const CustomProductPlatform = () => {
       name: "Jerseys", 
       image: "https://images.footballfanatics.com/manchester-united/manchester-united-adidas-third-shirt-2025-26-kids-with-mbeumo-19-printing_ss5_p-203336844+u-d3baabbebhct5vbqooee+v-wq6xckl63rv4fifchlw1.jpg?_hv=2&w=600",
       category: "apparel"
-    },
-    // { 
-    //   name: "Tote Bags", 
-    //   image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop&auto=format",
-    //   category: "accessories"
-    // },
-    // { 
-    //   name: "Mugs", 
-    //   image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=300&h=300&fit=crop&auto=format",
-    //   category: "drinkware"
-    // },
-    // { 
-    //   name: "Phone Cases", 
-    //   image: "https://images.unsplash.com/photo-1601593346740-925612772716?w=300&h=300&fit=crop&auto=format",
-    //   category: "accessories"
-    // },
-    // { 
-    //   name: "Notebooks", 
-    //   image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=300&fit=crop&auto=format",
-    //   category: "stationery"
-    // }
+    }
   ];
 
   const faqs = [
@@ -104,7 +80,7 @@ const CustomProductPlatform = () => {
     },
     {
       question: "How long does delivery take?",
-      answer: "Production and delivery takes 3-4 business days, depending on your location and item quantity. "
+      answer: "Production and delivery takes 3-4 business days, depending on your location and item quantity."
     },
     {
       question: "Can I see a mockup before ordering?",
@@ -113,11 +89,7 @@ const CustomProductPlatform = () => {
     {
       question: "What's your return policy?",
       answer: "We offer 30-day returns for defective items. Since products are custom-made, we cannot accept returns for design changes or personal preferences."
-    },
-    // {
-    //   question: "Do you offer bulk ordering discounts?",
-    //   answer: "Absolutely! We provide significant discounts for orders of 25+ items. Contact our sales team for custom pricing on large orders."
-    // }
+    }
   ];
 
   const testimonials = [
@@ -145,14 +117,25 @@ const CustomProductPlatform = () => {
     setActiveFAQ(activeFAQ === index ? null : index);
   };
 
-  const toggleVideo = () => {
+  const openVideoModal = () => {
+    setShowVideoModal(true);
+  };
+
+  const closeVideoModal = () => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+    setShowVideoModal(false);
+  };
+
+  const handleVideoClick = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
         videoRef.current.play();
+      } else {
+        videoRef.current.pause();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -173,7 +156,6 @@ const CustomProductPlatform = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-4 sm:space-x-6"
-            
           >
             <button className="text-gray-400 hover:text-gray-200 transition-colors hidden sm:block" onClick={() => navigate('/login')}>
               Login
@@ -182,7 +164,7 @@ const CustomProductPlatform = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow transition-shadow"
-            onClick={() => navigate('/register')}
+              onClick={() => navigate('/register')}
             >
               Get Started
             </motion.button>
@@ -251,9 +233,11 @@ const CustomProductPlatform = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gray-800 text-gray-200 px-6 sm:px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-700 transition-colors border border-gray-700"
+                  className="bg-gray-800 text-gray-200 px-6 sm:px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-700 transition-colors border border-gray-700 flex items-center justify-center space-x-2"
+                  onClick={openVideoModal}
                 >
-                  Watch Demo
+                  <Play className="w-5 h-5" />
+                  <span>Watch Demo</span>
                 </motion.button>
               </motion.div>
 
@@ -281,7 +265,6 @@ const CustomProductPlatform = () => {
               className="relative order-1 lg:order-2 mb-8 lg:mb-0"
             >
               <div className="relative">
-                {/* White shadow effect using multiple box-shadows */}
                 <div className="relative rounded-2xl overflow-hidden"
                   style={{
                     boxShadow: '0 25px 50px -12px rgba(255, 255, 255, 0.15), 0 10px 30px -15px rgba(255, 255, 255, 0.1)'
@@ -435,19 +418,28 @@ const CustomProductPlatform = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative rounded-2xl overflow-hidden shadow-lg mx-auto bg-white border border-gray-200"
+            className="relative rounded-2xl overflow-hidden shadow-lg mx-auto bg-white border border-gray-200 cursor-pointer"
+            onClick={openVideoModal}
           >
-            <div className="bg-gray-100 aspect-video flex items-center justify-center relative">
+            <div className="bg-gray-100 aspect-video flex items-center justify-center relative group hover:bg-gray-200 transition-colors">
               <div className="text-center">
-                <motion.button
+                <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  onClick={toggleVideo}
-                  className="bg-gray-900 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow mb-3"
+                  className="bg-gray-900 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow mb-3"
                 >
                   <Play className="w-6 h-6 text-white ml-0.5" />
-                </motion.button>
-                <p className="text-gray-700">Click to play demo</p>
+                </motion.div>
+                <p className="text-gray-700 group-hover:text-gray-900 transition-colors">
+                  Click to play demo
+                </p>
+              </div>
+              
+              {/* Video thumbnail preview */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity">
+                <video className="w-full h-full object-cover" muted>
+                  <source src={videoUrl} type="video/mp4" />
+                </video>
               </div>
             </div>
           </motion.div>
@@ -599,10 +591,6 @@ const CustomProductPlatform = () => {
           </p>
           
           <div className="flex justify-center space-x-6 text-gray-500 text-sm flex-wrap">
-            {/* <a href="#" className="hover:text-gray-900 transition-colors mb-2">Privacy</a>
-            <a href="#" className="hover:text-gray-900 transition-colors mb-2">Terms</a>
-            <a href="#" className="hover:text-gray-900 transition-colors mb-2">Contact</a>
-            <a href="#" className="hover:text-gray-900 transition-colors mb-2">Support</a> */}
             <p>Copyright © {new Date().getFullYear()} Plangex. All rights reserved.</p>
           </div>
 
@@ -612,6 +600,69 @@ const CustomProductPlatform = () => {
           </div>
         </div>
       </footer>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideoModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={closeVideoModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="relative w-full max-w-4xl bg-gray-900 rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={closeVideoModal}
+                className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Video Player */}
+              <div className="relative pt-[56.25%]">
+                <video
+                  ref={videoRef}
+                  src={videoUrl}
+                  className="absolute top-0 left-0 w-full h-full object-contain bg-black"
+                  controls
+                  autoPlay
+                  onClick={handleVideoClick}
+                  onEnded={closeVideoModal}
+                />
+              </div>
+
+              {/* Video Info */}
+              <div className="p-6 bg-gray-900">
+                <h3 className="text-xl font-bold text-white mb-2">
+                  PlangeX Platform Demo
+                </h3>
+                <p className="text-gray-300">
+                  Watch how to create custom products with our intuitive drag-and-drop interface
+                </p>
+              </div>
+
+              {/* Controls for mobile */}
+              <div className="sm:hidden flex items-center justify-center p-4 bg-gray-800">
+                <button
+                  onClick={() => videoRef.current?.requestFullscreen()}
+                  className="text-white hover:text-blue-400 transition-colors text-sm"
+                >
+                  Expand to fullscreen for better viewing
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

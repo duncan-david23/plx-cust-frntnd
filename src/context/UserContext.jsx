@@ -29,9 +29,11 @@ export const UserProvider = ({ children }) => {
         }
       );
       if (response.data) {
+        
         setUser({
           username: response.data.full_name || 'username',
           email: response.data.email || 'you@example.com',
+          phone: response.data.phone || 'N/A',
         });
       }
     } catch (error) {

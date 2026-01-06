@@ -44,6 +44,7 @@ const AccountPage = () => {
       localStorage.removeItem('userId');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('business_name');
+      localStorage.removeItem('userCart');
     }
   };
 

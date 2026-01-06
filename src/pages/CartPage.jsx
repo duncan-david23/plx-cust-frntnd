@@ -1,26 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ArrowLeft, Image as ImageIcon, Type } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, Image as ImageIcon, Type, Package, AlertCircle } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
-import {PaystackButton} from 'react-paystack';
+import { PaystackButton } from 'react-paystack';
 import toast from 'react-hot-toast';
-import { use } from 'react';
 import { useUser } from '../context/UserContext';
 
 const CartPage = () => {
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
   const { user } = useUser();
+  
+  // States
+  const [includeDelivery, setIncludeDelivery] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileComplete, setProfileComplete] = useState(false);
 
   const publicKey = 'pk_test_3bdc97b024233bb522a068bfefbbe9292322b0fa';
   const notify = () => toast.error('Transaction was not completed, please try again.');
 
+  // Fetch user profile to check if complete
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        setLoadingProfile(true);
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          setLoadingProfile(false);
+          return;
+        }
+        
+        const accessToken = session.access_token;
+        const response = await axios.get(
+          'https://plx-bckend.onrender.com/api/users/account-profile',
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        
+        if (response.data) {
+          setUserProfile(response.data);
+          // Check if profile is complete (has name and phone)
+          const hasName = response.data.full_name && response.data.full_name.trim() !== '';
+          const hasPhone = response.data.phone_number && response.data.phone_number.trim() !== '';
+          setProfileComplete(hasName && hasPhone);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        toast.error('Unable to load your profile');
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
 
-   
+    fetchUserProfile();
+  }, []);
 
   const updateQuantity = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
@@ -38,124 +78,136 @@ const CartPage = () => {
     });
   };
 
-  const proceedToCheckout = () => {
-    // navigate('/checkout');
-    alert('Proceeding to checkout (functionality to be implemented)');
-  };
-
   const subtotal = state.cart.reduce((total, item) => {
     return total + (item.productPrice * item.quantity);
   }, 0);
 
-  const shipping = subtotal > 500 ? 0 : 35; // GHC 35 shipping
+  // Calculate shipping - FREE if subtotal > 500 AND user includes delivery
+  const isEligibleForFreeShipping = subtotal > 500;
+  
+  // For display purposes only - actual fee will be determined based on location
+  const estimatedDeliveryFee = 35; // Just for UI display
+  const shipping = includeDelivery ? 
+    (isEligibleForFreeShipping ? 0 : estimatedDeliveryFee) : 
+    0;
+
   const total = subtotal + shipping;
 
-  
+  // Check if user can proceed to payment
+  const canProceedToPayment = () => {
+    if (loadingProfile) return false;
+    if (!profileComplete) return false;
+    return true;
+  };
 
+  // Custom Paystack button click handler
+  const handlePaystackClick = (e) => {
+    if (!canProceedToPayment()) {
+      e.preventDefault();
+      if (!profileComplete) {
+        toast.error('Please complete your profile setup before making payment');
+        alert('Please complete your profile setup:\n\n1. Go to your profile page\n2. Fill in your full name and phone number\n3. Save your profile\n4. Return to cart to complete payment');
+        navigate('/profile');
+      }
+      return;
+    }
+  };
 
-
-
-
-
-
-const componentProps = {
-    email: user.email,
-    amount: total * 100, // Paystack expects amount in kobo
+  const componentProps = {
+    email: user?.email || '',
+    amount: total * 100,
     publicKey: publicKey,
     currency: 'GHS',
     text: 'Proceed to Checkout',
-    onSuccess: () => {
-      toast.success('Order placed successfully!');
-      submitOrderToBackend();
-      navigate('/thank-you');
+    onSuccess: async () => {
+      try {
+        await submitOrderToBackend();
+        toast.success('Order placed successfully!');
+        navigate('/thank-you');
+      } catch (error) {
+        // Payment succeeded but order submission failed
+        toast.error('Payment succeeded but order submission failed. Contact support.');
+        console.error('Order submission error after payment:', error);
+      }
     },
     onClose: () => {
       notify();
     }
+  };
 
-}
-
-// Function to submit order to backend
-
-const submitOrderToBackend = async () => {
-  try {
-    // Get auth token
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      console.error("❌ No active session");
-      return;
-    }
-    const accessToken = session.access_token;
-
-    // Prepare order items
-    const order_items = state.cart.map(item => ({
-      product_name: item.productName,
-      product_price: item.productPrice,
-      quantity: item.quantity,
-      size: item.size,
-      custom_instructions: item.customInstructions || '',
-      uploaded_designs: item.uploadedDesigns?.map(design => ({
-        id: design.id,
-        name: design.name,
-        type: design.type,
-        is_text: design.isText,
-        text_content: design.isText ? design.text : null,
-        font_size: design.isText ? design.fontSize : null,
-        font_family: design.isText ? design.fontFamily : null,
-        text_color: design.isText ? design.color : null,
-        image_data: !design.isText ? design.url : null,
-      })) || [],
-      uploaded_designs_count: item.uploadedDesignsCount || 0,
-      preview_image: item.previewImage,
-      total_price: item.price,
-      timestamp: new Date().toISOString()
-    }));
-
-    const order_total = state.cart.reduce((sum, item) => sum + item.price, 0) + shipping;
-    const item_count = state.cart.length;
-
-    // Submit order
-    const response = await axios.post(
-      'https://plx-bckend.onrender.com/api/users/create-order',
-      { order_items, order_total, item_count },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        }
+  // Function to submit order to backend
+  const submitOrderToBackend = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error('Please login to continue');
+        return;
       }
-    );
+      
+      const accessToken = session.access_token;
 
-       dispatch({ type: 'CLEAR_CART' });
-    
-    // Also clear from localStorage if you're using it
-    localStorage.removeItem('cart');
-    
-   
-    
-    return response.data;
-    
-   
-  } catch (error) {
-    console.error('Error:', error);
-   toast.error('Failed to submit order. Please complete your profile setup.');
-   alert('Failed to submit order. Please complete your profile setup.');
-    throw error;
-  }
-};
+      // Prepare order items
+      const order_items = state.cart.map(item => ({
+        product_name: item.productName,
+        product_price: item.productPrice,
+        quantity: item.quantity,
+        size: item.size,
+        custom_instructions: item.customInstructions || '',
+        uploaded_designs: item.uploadedDesigns?.map(design => ({
+          id: design.id,
+          name: design.name,
+          type: design.type,
+          is_text: design.isText,
+          text_content: design.isText ? design.text : null,
+          font_size: design.isText ? design.fontSize : null,
+          font_family: design.isText ? design.fontFamily : null,
+          text_color: design.isText ? design.color : null,
+          image_data: !design.isText ? design.url : null,
+        })) || [],
+        uploaded_designs_count: item.uploadedDesignsCount || 0,
+        preview_image: item.previewImage,
+        total_price: item.price,
+        timestamp: new Date().toISOString()
+      }));
 
+      const order_total = total;
+      const item_count = state.cart.length;
+      const delivery_included = includeDelivery;
+      const delivery_paid = includeDelivery;
 
+      // Submit order
+      const response = await axios.post(
+        'https://plx-bckend.onrender.com/api/users/create-order',
+        { 
+          order_items, 
+          order_total, 
+          item_count,
+          delivery_included,
+          delivery_paid,
+          delivery_fee: includeDelivery ? shipping : 0,
+          free_shipping_applied: isEligibleForFreeShipping && includeDelivery,
+          customer_name: userProfile?.full_name,
+          customer_phone: userProfile?.phone_number
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }
+      );
 
-  // Function to view design details
-  const viewDesignDetails = (designs) => {
-    const designList = designs.map(design => 
-      design.isText 
-        ? `📝 Text: "${design.text}" (${design.fontSize}px, ${design.color})`
-        : `🖼️ Image: ${design.name}`
-    ).join('\n');
-    
-    alert(`Designs Applied:\n\n${designList}`);
+      // Clear cart after successful order
+      dispatch({ type: 'CLEAR_CART' });
+      localStorage.removeItem('cart');
+      
+      return response.data;
+      
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
   };
 
   if (state.cart.length === 0) {
@@ -230,33 +282,14 @@ const submitOrderToBackend = async () => {
                       </span>
                     </div>
                     
-                    {/* Product Specifications */}
                     <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
                       <div className="space-y-1">
                         <p><span className="font-medium">Unit Price:</span> {formatCurrency(item.productPrice)}</p>
                         <p><span className="font-medium">Quantity:</span> {item.quantity}</p>
                         <p><span className="font-medium">Size:</span> {item.size}</p>
                       </div>
-                      <div className="space-y-1">
-                        {/* <p>
-                          <span className="font-medium">Designs:</span> {item.uploadedDesignsCount}
-                          {item.uploadedDesignsCount > 0 && (
-                            <button
-                              onClick={() => viewDesignDetails(item.uploadedDesigns)}
-                              className="ml-2 text-blue-600 hover:text-blue-800 text-xs"
-                            >
-                              View Details
-                            </button>
-                          )}
-                        </p> */}
-                        {/* <div className="flex items-center space-x-1">
-                          <span className="font-medium">Status:</span>
-                          <span className="text-green-600">Ready for production</span>
-                        </div> */}
-                      </div>
                     </div>
                     
-                    {/* Custom Instructions */}
                     {item.customInstructions && (
                       <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
                         <p className="text-sm font-medium text-blue-900 mb-1">Custom Instructions:</p>
@@ -264,7 +297,6 @@ const submitOrderToBackend = async () => {
                       </div>
                     )}
                     
-                    {/* Design Preview (Mini thumbnails) */}
                     {item.uploadedDesigns.length > 0 && (
                       <div className="mb-4">
                         <p className="text-sm font-medium text-gray-700 mb-2">Applied Designs:</p>
@@ -303,7 +335,6 @@ const submitOrderToBackend = async () => {
                       </div>
                     )}
                     
-                    {/* Quantity Controls and Actions */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                       <div className="flex items-center space-x-3">
                         <span className="text-sm text-gray-600 mr-2">Update Quantity:</span>
@@ -324,26 +355,13 @@ const submitOrderToBackend = async () => {
                         </button>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        {/* <button
-                          onClick={() => viewDesignDetails(item.uploadedDesigns)}
-                          disabled={item.uploadedDesigns.length === 0}
-                          className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                            item.uploadedDesigns.length === 0
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                          }`}
-                        >
-                          View Designs
-                        </button> */}
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Remove from cart"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Remove from cart"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -362,29 +380,122 @@ const submitOrderToBackend = async () => {
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
                 
-                <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span>{shipping === 0 ? 'FREE' : formatCurrency(shipping)}</span>
+                {/* Delivery Option */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <Package className="w-5 h-5 text-gray-700" />
+                      <span className="font-medium text-gray-900">Delivery Option</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium">
+                        {includeDelivery ? 'Pay Now' : 'Pay on Delivery'}
+                      </span>
+                      <button
+                        onClick={() => setIncludeDelivery(!includeDelivery)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                          includeDelivery ? 'bg-black' : 'bg-gray-300'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            includeDelivery ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm space-y-2">
+                    {includeDelivery ? (
+                      <>
+                        <p className="text-gray-700">
+                          <span className="font-medium">Delivery fee included in total:</span> 
+                          {isEligibleForFreeShipping ? ' FREE' : ` Estimated fee`}
+                        </p>
+                        {isEligibleForFreeShipping ? (
+                          <p className="text-green-600 bg-green-50 p-2 rounded">
+                            🎉 Free delivery applied!
+                          </p>
+                        ) : (
+                          <p className="text-gray-500">
+                            Add {formatCurrency(500 - subtotal)} more for free delivery
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-gray-700">
+                          <span className="font-medium">Pay delivery fee when order arrives</span>
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                          Delivery fee varies based on your location and will be collected in cash upon delivery
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
                 
-                {shipping === 0 ? (
-                  <p className="text-sm text-green-600 bg-green-50 p-2 rounded-lg">
-                    🎉 Free shipping applied! You saved {formatCurrency(35)}
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-500">
-                    Add {formatCurrency(500 - subtotal)} more for free shipping
-                  </p>
-                )}
+                {/* Delivery Fee Display */}
+                <div className="flex justify-between text-gray-600 border-t border-gray-200 pt-4">
+                  <span>
+                    {includeDelivery ? 
+                      (isEligibleForFreeShipping ? 'Delivery Fee' : 'Estimated Delivery Fee') : 
+                      'Delivery Fee'
+                    }
+                  </span>
+                  <span className={isEligibleForFreeShipping && includeDelivery ? 'text-green-600 font-medium' : ''}>
+                    {includeDelivery ? 
+                      (isEligibleForFreeShipping ? 'FREE' : 'Pay Now') : 
+                      'Pay on Delivery'
+                    }
+                  </span>
+                </div>
                 
+                {/* Total */}
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between text-lg font-medium text-gray-900">
-                    <span>Total</span>
+                    <span>Total Amount</span>
                     <span>{formatCurrency(total)}</span>
                   </div>
-                 
+                  <p className="text-sm text-gray-500 mt-1">
+                    {includeDelivery ? 
+                      (isEligibleForFreeShipping ? 
+                        'Includes FREE delivery' : 
+                        'Includes estimated delivery fee'
+                      ) : 
+                      'Excludes delivery fee (Pay upon delivery)'
+                    }
+                  </p>
+                  {!includeDelivery && !isEligibleForFreeShipping && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Delivery fee will be determined based on your location
+                    </p>
+                  )}
                 </div>
               </div>
+
+              {/* Profile Check Warning */}
+              {!loadingProfile && !profileComplete && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800">Complete Your Profile</p>
+                      <p className="text-xs text-yellow-700 mt-1">
+                        Please add your full name and phone number to your profile before making payment.
+                      </p>
+                      <button
+                        onClick={() => navigate('/profile')}
+                        className="mt-2 text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded hover:bg-yellow-200 transition-colors"
+                      >
+                        Go to Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Design Summary */}
               <div className="mt-6 pt-6 border-t border-gray-200">
@@ -408,19 +519,35 @@ const submitOrderToBackend = async () => {
                 </div>
               </div>
 
-              {/* <button
-                onClick={submitOrderToBackend}
-                className="w-full bg-black text-white py-4 rounded-lg font-semibold mt-6 hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
-              >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-5 h-5" />
-              </button> */}
+              {/* Paystack Button with custom onClick */}
+              <div onClick={handlePaystackClick}>
+                <PaystackButton 
+                  {...componentProps} 
+                  className={`w-full bg-black text-white py-4 rounded-lg font-semibold mt-6 hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2 ${
+                    !canProceedToPayment() ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                />
+              </div>
 
-              <PaystackButton {...componentProps} className="w-full bg-black text-white py-4 rounded-lg font-semibold mt-6 hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2" />
-
-              <p className="text-xs text-gray-500 text-center mt-4">
-                Your customized designs will be sent to production after payment
-              </p>
+              {loadingProfile ? (
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  Checking profile...
+                </p>
+              ) : !profileComplete ? (
+                <p className="text-xs text-red-500 text-center mt-4">
+                  Please complete your profile to proceed with payment
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  {includeDelivery ? 
+                    (isEligibleForFreeShipping ? 
+                      'Your order includes free delivery' :
+                      'Your order includes estimated delivery fee'
+                    ) : 
+                    'Delivery fee will be determined based on your location and paid upon delivery'
+                  }
+                </p>
+              )}
             </div>
           </div>
         </div>
