@@ -69,7 +69,7 @@ const Login = () => {
         localStorage.setItem('userEmail', data.user.email);
   
       // setUserAuth(data.user);
-      navigate('/user-account');
+      navigate('products');
       // notify();
   } catch (error) {
     console.error('Error signing in:', error);
