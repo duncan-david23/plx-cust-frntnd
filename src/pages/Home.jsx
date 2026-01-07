@@ -25,7 +25,7 @@ const CustomProductPlatform = () => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
-  const videoUrl = "https://res.cloudinary.com/dxu2myqmz/video/upload/v1767720049/0106_ochfr8.mp4";
+  const videoUrl = "https://res.cloudinary.com/dxu2myqmz/video/upload/v1767728683/58A19C3B-174A-4DB0-8A94-A1330776C479-compressed_wqqivo.mov";
 
   const features = [
     {
