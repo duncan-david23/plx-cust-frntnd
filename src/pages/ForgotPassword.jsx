@@ -40,7 +40,7 @@ const ForgotPassword = () => {
 
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://plangex.netlify.app/reset-password',
+      redirectTo: 'https://plangex.com/reset-password',
     });
 
     if (error) {

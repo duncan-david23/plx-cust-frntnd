@@ -86,7 +86,7 @@ const CartPage = () => {
   const isEligibleForFreeShipping = subtotal > 500;
   
   // For display purposes only - actual fee will be determined based on location
-  const estimatedDeliveryFee = 35; // Just for UI display
+  const estimatedDeliveryFee = 40; // Just for UI display
   const shipping = includeDelivery ? 
     (isEligibleForFreeShipping ? 0 : estimatedDeliveryFee) : 
     0;

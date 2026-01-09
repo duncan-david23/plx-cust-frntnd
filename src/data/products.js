@@ -3,100 +3,100 @@ export const products = [
     id: 1,
     name: "Tshirt_White_1-Side",
     category: "tshirts",
-    price: 119.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767694555/69a0120b-f27e-455f-a80e-00d8fe366d87_ewyk3v.webp",
     sizes: [ "M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 2,
     name: "Tshirt_White_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583519/tshirt_white_2-sides_j79ovc.jpg",
     sizes: [ "M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 3,
     name: "Tshirt_Black_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583502/tshirt_black_2-sides_xrjmai.jpg",
     sizes: [ "M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 4,
     name: "Tshirt_Black_1-side",
     category: "tshirts",
-    price: 154.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583512/tshirt_black_1-side_zgnwvq.jpg",
     sizes: ["M", "L", "XL", ],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 5,
     name: "Hoodie_White_2-sides",
     category: "hoodies",
-    price: 240.00,
+    price: 224.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583524/hoodie_white_2-sides_gmmb7i.jpg",
     sizes: ["S", "M", "L", "XL", "XXL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 6,
     name: "Hoodie_White_1-side",
     category: "hoodies",
-    price: 215.00,
+    price: 194.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583511/white_hoodie_1-side_rjcjrn.jpg",
     sizes: ["S", "M", "L", "XL", "XXL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 7,
     name: "Hoodie_Black_1-side",
     category: "hoodies",
-    price: 215.00,
+    price: 194.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583510/hoodie_1-side_nw2rd6.webp",
     sizes: ["S", "M", "L", "XL", "XXL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 8,
     name: "Hoodie_Black_2-side",
     category: "hoodies",
-    price: 240.00,
+    price: 224.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1764583502/black_hoodie_2-sides_yxe1a7.jpg",
     sizes: ["S", "M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 9,
     name: "Classic Baseball Cap",
     category: "caps",
-    price: 88.90,
+    price: 79.99,
     image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=800&h=800&fit=crop&auto=format",
     sizes: [ "Adjustable"],
     description: "Structured cap with premium wool construction and custom embroidery-ready front panel.",
     features: ["Premium Wool", "Structured Fit", "Adjustable Strap", "Embroidery Ready"],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
  
 
@@ -104,99 +104,187 @@ export const products = [
     id: 10,
     name: "Tshirt_Olive-Green_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1766846824/green_tshirt_2sides_sypsbf.jpg",
     sizes: [ "M", "L", "XL",],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 11,
     name: "Tshirt_Olive-Green_1-side",
     category: "tshirts",
-    price: 119.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1766846825/green_tshirt_pyskj4.webp",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 12,
     name: "Tshirt_cream-color_1-side",
     category: "tshirts",
-    price: 119.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767695131/06_v90xkx.webp",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 13,
     name: "Tshirt_gray-ash_1-side",
     category: "tshirts",
-    price: 119.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767451252/mens-gildan-short-sleeve-heavy-cotton-tshirt-ash-grey_sjxphd.webp",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
    id: 14,
    name: "Classic Baseball Cap black",
    category: "caps",
-   price: 88.90,
+   price: 79.99,
    image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767438708/pxiakgy-sun-hat-womens-classics-retro-trucker-cap-trucker-cap-with-adjustable-snapback-unimen-women-breathable-baseball-cap-hat-c-one-size_9401271f-b9e8-46bc-bbc2-4d9b4e1d47fe.b8eade23c0686b75153ef2349051c58e_jpyrlx.avif",
    sizes: [ "Adjustable"],
    description: "Structured cap with premium wool construction and custom embroidery-ready front panel.",
    features: ["Premium Wool", "Structured Fit", "Adjustable Strap", "Embroidery Ready"],
-   deliveryTime: "2-3 business days"
+   deliveryTime: "2-4 business days"
  },
   {
     id: 15,
     name: "Tshirt_red_1-side",
     category: "tshirts",
-    price: 119.99,
+    price: 109.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767694541/istockphoto-1354031012-612x612_sces6b.jpg",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 16,
     name: "Tshirt_red_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767694541/istockphoto-685779142-612x612_dq7vbk.jpg",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 17,
     name: "Tshirt_cream-color_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767695131/front-back-view-cream-regular-600nw-2539136519_mbxphj.webp",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
   {
     id: 18,
     name: "Tshirt_gray-ash_2-sides",
     category: "tshirts",
-    price: 154.99,
+    price: 129.99,
     image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767695584/istockphoto-685779008-612x612_cq1ioj.jpg",
     sizes: ["M", "L", "XL"],
     description: "",
     features: [""],
-    deliveryTime: "2-3 business days"
+    deliveryTime: "2-4 business days"
   },
+  // {
+  //   id: 19,
+  //   name: "Manchester United Home Jersey",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793869/manchester-united-adidas-home-shirt-2025-26_ss5_p-202794649_u-mbmtushvfpqbvpxcn8p7_v-alv6qnp7uzbtrbn2afgv_imox6f.jpg",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 20,
+  //   name: "Manchester United Away Jersey white",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793869/MUFC_2526_Away_Authentic_Shirt_1000x1000_vx02h1.jpg",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 21,
+  //   name: "Real Madrid Home Jersey",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793906/real-madrid-adidas-home-authentic-shirt-2025-26_ss5_p-202794631_u-pi0y26paiqa7hyctb4uu_v-escjbho42bm6wwkorzhv_wztprs.avif",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 22,
+  //   name: "Real Madrid Away Jersey Blue",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793906/real-madrid-adidas-third-authentic-shirt-2025-26_ss5_p-202794641_u-vw8eeb0xjppik42wni5s_v-79le0ebf0vidkfvfxdkw_kmh7xi.avif",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 23,
+  //   name: "Barcelona Away Jersey Pink",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793869/51VSy3LRfWL_sbplhd.jpg",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 24,
+  //   name: "Barcelona Home Jersey",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793869/51QueNNIKbL._AC_UY1100__bvwzgz.jpg",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 25,
+  //   name: "Tottenham Home Jersey",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767794005/Tottenham-Soccer-Jersey_-Home-25-26-front-back_bhucec.jpg",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
+  // {
+  //   id: 26,
+  //   name: "Chelsea Home Jersey",
+  //   category: "Jerseys",
+  //   price: 124.99,
+  //   image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767793869/Screen_Shot_2025_05_16_at_00.24.49_vxd1tf.webp",
+  //   sizes: ["M", "L", "XL"],
+  //   description: "",
+  //   features: [""],
+  //   deliveryTime: "2-3 business days"
+  // },
 ];

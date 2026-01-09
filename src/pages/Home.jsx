@@ -67,8 +67,8 @@ const CustomProductPlatform = () => {
       category: "accessories"
     },
     { 
-      name: "Jerseys", 
-      image: "https://images.footballfanatics.com/manchester-united/manchester-united-adidas-third-shirt-2025-26-kids-with-mbeumo-19-printing_ss5_p-203336844+u-d3baabbebhct5vbqooee+v-wq6xckl63rv4fifchlw1.jpg?_hv=2&w=600",
+      name: "Sweatshirts", 
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767966674/Gildan-Crewneck-Sweatshirt-Unisex-Sweatshirts-Basic-Casual-Sweatshirts-for-Women-Men-s-Fleece-Crewneck-Sweatshirt-Long-Sleeve-Plain-Sweatshirt_2fad24a1-7a1b-4e1c-9fc2-34e5b9ab6670.045989f859a8d0da01a077f1daab1537_x22ubp.avif",
       category: "apparel"
     }
   ];
@@ -588,6 +588,9 @@ const CustomProductPlatform = () => {
           
           <p className="text-gray-600 mb-6">
             Making custom product creation accessible to everyone
+          </p>
+          <p className="text-gray-600 mb-6">
+            <span className="font-semibold">Address:</span> Haatso-Atomic, Bohye Narhman. Adjacent to DVLA Office
           </p>
           
           <div className="flex justify-center space-x-6 text-gray-500 text-sm flex-wrap">
