@@ -55,6 +55,10 @@ const TextDesigner = () => {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
+  // Track if we're interacting with canvas
+  const [isCanvasInteraction, setIsCanvasInteraction] = useState(false);
+
+  // Fonts list
   const fonts = [
     'Impact',
     'Arial Black',
@@ -260,6 +264,11 @@ const TextDesigner = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
+    // Only process if click is inside canvas
+    if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) return;
+    
+    setIsCanvasInteraction(true);
+    
     if (activeTool === 'draw') {
       setIsDrawing(true);
       setCurrentDrawing([{ x, y }]);
@@ -326,6 +335,12 @@ const TextDesigner = () => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    
+    // Only process if inside canvas
+    if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+      handleMouseUp();
+      return;
+    }
     
     if (activeTool === 'draw' && isDrawing) {
       setCurrentDrawing(prev => [...prev, { x, y }]);
@@ -453,6 +468,64 @@ const TextDesigner = () => {
       
       setIsDrawingShape(false);
       setCurrentShapePoints(null);
+    }
+    
+    setIsCanvasInteraction(false);
+  };
+
+  // Touch handlers - fixed to only prevent on canvas
+  const handleTouchStart = (e) => {
+    // Only prevent default if we're interacting with the canvas
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const touch = e.touches[0];
+    if (!touch) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    // Check if touch is inside canvas area
+    if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+    // If touch is outside canvas, don't prevent default - allow normal scrolling
+  };
+
+  const handleTouchMove = (e) => {
+    if (isCanvasInteraction) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const touch = e.touches[0];
+      if (!touch) return;
+      
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      // Only process if inside canvas area
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+      } else {
+        // If touch moves outside canvas, end the current action
+        handleMouseUp();
+      }
+    }
+    // If not canvas interaction, allow normal scrolling
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isCanvasInteraction) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleMouseUp();
     }
   };
 
@@ -879,24 +952,6 @@ const TextDesigner = () => {
     isDrawingShape, currentShapePoints
   ]);
 
-  // Touch handlers for mobile
-  const handleTouchStart = (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
-  };
-
-  const handleTouchMove = (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
-  };
-
-  const handleTouchEnd = (e) => {
-    e.preventDefault();
-    handleMouseUp();
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white py-4 md:py-8">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
@@ -1009,6 +1064,9 @@ const TextDesigner = () => {
                     onChange={(e) => setFontFamily(e.target.value)}
                     className="w-full p-2 text-sm md:text-base bg-gray-900 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white"
                     style={{ fontFamily }}
+                    // Allow normal scrolling on mobile for dropdowns
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchMove={(e) => e.stopPropagation()}
                   >
                     {fonts.map(font => (
                       <option key={font} value={font} className="bg-gray-900 text-white">
@@ -1325,9 +1383,6 @@ const TextDesigner = () => {
                 ref={containerRef}
                 className="relative bg-gray-900 rounded-lg border-2 border-gray-700 overflow-hidden"
                 style={{ height: '400px', minHeight: '400px' }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
               >
                 <canvas
                   ref={canvasRef}
@@ -1336,13 +1391,17 @@ const TextDesigner = () => {
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                   style={{ 
                     cursor: 
                       activeTool === 'text' ? 'move' :
                       activeTool === 'draw' ? 'crosshair' :
                       activeTool === 'eraser' ? 'crosshair' :
                       activeTool === 'move' ? 'move' :
-                      activeTool.startsWith('shape-') ? 'crosshair' : 'default'
+                      activeTool.startsWith('shape-') ? 'crosshair' : 'default',
+                    touchAction: 'none'
                   }}
                 />
                 

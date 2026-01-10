@@ -1120,8 +1120,8 @@ const downloadPreview = async () => {
                     disabled={uploading || uploadedDesigns.length === 0}
                     className={`px-3 sm:px-4 py-2 rounded-lg font-semibold flex items-center space-x-1 sm:space-x-2 transition-colors text-xs sm:text-sm ${
                       uploading || uploadedDesigns.length === 0
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-green-600 text-white hover:bg-green-700'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-green-600 text-white hover:bg-green-700'
                     }`}
                   >
                     {uploading ? (
@@ -1139,10 +1139,18 @@ const downloadPreview = async () => {
                 </div>
               </div>
 
+                    <p className='text-xs bg-blue-100 p-[10px] rounded-md'>
+  If you want to remove the background from your uploaded artwork or design, use  
+  <span className="font-semibold text-blue-500 italic pl-1.5">
+    <a href="https://www.remove.bg/" target="_blank" rel="noopener noreferrer">
+      https://www.remove.bg/
+    </a>
+  </span>.
+</p>
               {/* Product Preview Area */}
               <div 
                 ref={productRef}
-                className="relative bg-gray-900 text-white rounded-2xl p-8 min-h-[600px] flex items-center justify-center"
+                className="relative bg-gray-900 text-white rounded-2xl p-8 min-h-[600px] mt-4 flex items-center justify-center"
                 onWheel={handleWheel}
               >
                 {/* Product Base */}

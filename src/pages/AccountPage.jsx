@@ -82,7 +82,7 @@ const AccountPage = () => {
       
       // Fetch user data from your API
       const response = await axios.get(
-        "https://plx-bckend.onrender.com/api/users/account-profile",
+        "https://plx-bckend.onrender.com/api/users/account-profile", 
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }

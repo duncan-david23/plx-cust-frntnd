@@ -21,7 +21,7 @@ const CartPage = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileComplete, setProfileComplete] = useState(false);
 
-  const publicKey = 'pk_test_3bdc97b024233bb522a068bfefbbe9292322b0fa';
+  const publicKey = 'pk_live_760359367d973660d1cd77f5f1954e00c0cc2e38';
   const notify = () => toast.error('Transaction was not completed, please try again.');
 
   // Fetch user profile to check if complete
