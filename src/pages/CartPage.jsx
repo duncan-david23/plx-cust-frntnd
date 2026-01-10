@@ -487,7 +487,7 @@ const CartPage = () => {
                         Please add your full name and phone number to your profile before making payment.
                       </p>
                       <button
-                        onClick={() => navigate('/profile')}
+                        onClick={() => navigate('/user-account')}
                         className="mt-2 text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded hover:bg-yellow-200 transition-colors"
                       >
                         Go to Profile
