@@ -1244,7 +1244,7 @@ export const designTemplates =[
     {
       id: 208,
       name: "plx_208",
-      image: "",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146039/download__4_-removebg-preview_1_leqehq.png",
       category: "art"
     },
     {
@@ -1291,20 +1291,614 @@ export const designTemplates =[
     },
     {
       id: 216,
-      name: "plx_216 ",
-      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767545227/fb271f2ed30c3fb51ee0f48e8e72c230-removebg-preview_kqh0hf.png",
+      name: "plx_216",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143723/5ddc68e5e9321a4cb16f9e8d47bdfded-removebg-preview_vurifx.png",
       category: "art"
     },
     {
       id: 217,
       name: "plx_217",
-      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767545230/f700891c636dbcbced657efacafaa007-removebg-preview_xltzyd.png",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143723/91c1d72ef7aa2d582e0d2bdba7b382ae-removebg-preview_bs09lx.png",
       category: "art"
     },
     {
       id: 218,
       name: "plx_218",
-      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1767545231/fae2445a06d06ffba3cca265384101a4-removebg-preview_j37l95.png",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143723/721bfce4d2d0673a57ba4c8126ff2bd9-removebg-preview_zmcjr3.png",
+      category: "art"
+    },
+    {
+      id: 219,
+      name: "plx_219",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143724/7e347487746bf0eb974d98007c414521-removebg-preview_cz2xlm.png",
+      category: "art"
+    },
+    {
+      id: 220,
+      name: "plx_220",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143723/0308c63f95530d15057c6c15769de990-removebg-preview_fkdmqi.png",
+      category: "art"
+    },
+    {
+      id: 221,
+       name: "plx_221",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143724/2fd3d3e0689d8ccdc37e8a8fca4ccb12-removebg-preview_vipnbv.png",
+      category: "art"
+    },
+    {
+      id: 222,
+      name: "plx_222",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143725/download-removebg-preview_2_y547ot.png",
+      category: "art"
+    },
+    {
+      id: 223,
+      name: "plx_223",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143724/157e7d1310ca74471249d5be6aa65393-removebg-preview_egtl06.png",
+      category: "art"
+    },
+    {
+      id: 224,
+      name: "plx_224",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143724/d41c7dcef0291c78d3050180f7ed3e99-removebg-preview_dvmrar.png",
+      category: "art"
+    },
+    {
+      id: 225,
+      name: "plx_225",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143724/38918a19b9864e6dd940eb69cb021456-removebg-preview_oemnvw.png",
+      category: "art"
+    },
+    {
+      id: 226,
+      name: "plx_226",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143727/download__1_-removebg-preview_2_g3tsbi.png",
+      category: "art"
+    },
+    {
+      id: 227,
+      name: "plx_227",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143725/ac8d0caaf0f953bdd008d507d9df1817-removebg-preview_gcuxg9.png",
+      category: "art"
+    },
+    {
+      id: 228,
+      name: "plx_228",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143726/e14601c5759ad5387d8b0c9bbeaa73af-removebg-preview_cjzfor.png",
+      category: "art"
+    },
+    {
+      id: 229,
+      name: "plx_229",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768143727/f190a5a8bce8b32be7c7ba3362c9d1ba-removebg-preview_e6igej.png",
+      category: "art"
+    },
+    {
+      id: 230,
+      name: "plx_230",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144618/44c28e84c50ee53830f72a01f92d0f7a-removebg-preview_bcdks2.png",
+      category: "art"
+    },
+    {
+      id: 231,
+      name: "plx_231",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144618/442ca7ceabe6c33450cea75ac1e38331-removebg-preview_sfto1r.png",
+      category: "art"
+    },
+    {
+      id: 232,
+      name: "plx_232",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144619/4554a2c90d552eddd1a4a321475ace49-removebg-preview_clnnrt.png",
+      category: "art"
+    },
+    {
+      id: 233,
+      name: "plx_233",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144619/130839f2f7845665fc166da1525a57fc-removebg-preview_fgoaec.png",
+      category: "art"
+    },
+    {
+      id: 234,
+      name: "plx_234",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144619/787cff2761304460803840121cd44b6d-removebg-preview_hbeazh.png",
+      category: "art"
+    },
+    {
+      id: 235,
+      name: "plx_235",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144619/393265d82fc425099f2d3a69accbb083-removebg-preview_w3bnbh.png",
+      category: "art"
+    },
+    {
+      id: 236,
+      name: "plx_236",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144619/872022b908411c912e8adeceff190621-removebg-preview_hbfi5g.png",
+      category: "art"
+    },
+    {
+      id: 237,
+      name: "plx_237",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144620/5458159c99b18219c0f2cfb5137289fe-removebg-preview_fxii9j.png",
+      category: "art"
+    },
+    {
+      id: 238,
+      name: "plx_238",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144626/81791136f693d2e0b6d5837b88b11dcb-removebg-preview_cok8tb.png",
+      category: "art"
+    },
+    {
+      id: 239,
+      name: "plx_239",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144630/be4676a7638962a32d2b7a208f0ee616-removebg-preview_wlplrd.png",
+      category: "art"
+    },
+    {
+      id: 240,
+      name: "plx_240",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144630/cceb6e651739f1f6d5ed9d113ce20839-removebg-preview_u9v22d.png",
+      category: "art"
+    },
+    {
+      id: 241,
+      name: "plx_241",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144630/a936277fc14aabd1da83b7afb81ef27b-removebg-preview_yvpkmt.png",
+      category: "art"
+    },
+    {
+      id: 242,
+      name: "plx_242",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144631/download__2_-removebg-preview_2_ftlrpd.png",
+      category: "art"
+    },
+    {
+      id: 243,
+      name: "plx_243",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768144630/a11d2e755845631fa3d7f7f79e9db1e5-removebg-preview_hsobxd.png",
+      category: "art"
+    },
+    {
+      id: 244,
+      name: "plx_244",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145302/0c2fe5f97ea531c5ab5cef660706d082-removebg-preview_hcpeoc.png",
+      category: "art"
+    },
+    {
+      id: 245,
+      name: "plx_245",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145303/2fe7be805a1c88729a94da3b93320d7f-removebg-preview_jwkqzg.png",
+      category: "art"
+    },
+    {
+      id: 246,
+      name: "plx_246",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145303/4f53895acf317654599cba0afca1c29f-removebg-preview_1_eqqxc3.png",
+      category: "art"
+    },
+    {
+      id: 247,
+      name: "plx_247",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145303/3c14817fe157c849d668bb1e8b6dc536-removebg-preview_pifidt.png",
+      category: "art"
+    },
+    {
+      id: 248,
+      name: "plx_248",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145303/3e4bcbeebd5402187e3408aa8b6fd183-removebg-preview_hicdmh.png",
+      category: "art"
+    },
+    {
+      id: 249,
+      name: "plx_249",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145311/5ddc68e5e9321a4cb16f9e8d47bdfded__1_-removebg-preview_uzigpm.png",
+      category: "art"
+    },
+    {
+      id: 250,
+      name: "plx_250",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145311/12edbe23760d631c278a3c5d298c8bc8-removebg-preview_hyaty9.png",
+      category: "art"
+    },
+    {
+      id: 251,
+      name: "plx_251",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145312/26d6adcc71c5d716ffd947dc9bfc50b5-removebg-preview_s4eyav.png",
+      category: "art"
+    },
+    {
+      id: 252,
+      name: "plx_252",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145315/63a06d44657f906fc221d39ef48d6f3d-removebg-preview_ahp05c.png",
+      category: "art"
+    },
+    {
+      id: 253,
+      name: "plx_253",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145316/586da79788431cf2615468950a5d3fb8-removebg-preview_lxhcsu.png",
+      category: "art"
+    },
+    {
+      id: 254,
+      name: "plx_254",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145316/363e9ba00701bdb1f061981ca5656123-removebg-preview_n1fbav.png",
+      category: "art"
+    },
+    {
+      id: 255,
+      name: "plx_255",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145321/3238d160dab8ac5a4b26fc51afe1dac0-removebg-preview_umcvvi.png",
+      category: "art"
+    },
+    {
+      id: 256,
+      name: "plx_256",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145321/be3146397f6edee76f54ce3ae4abc798-removebg-preview_1_jzylei.png",
+      category: "art"
+    },
+    {
+      id: 257,
+      name: "plx_257",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145322/c38d57d29e1492533e51ec6e10fdc69e-removebg-preview_fbvnyq.png",
+      category: "art"
+    },
+    {
+      id: 258,
+      name: "plx_258",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145324/dd43fad5a2b1a756e826bb3132d9175a-removebg-preview_hgsosx.png",
+      category: "art"
+    },
+    {
+      id: 259,
+      name: "plx_259",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145327/e158248f9189cc26403b5aea9fea56c0-removebg-preview_fzrekb.png",
+      category: "art"
+    },
+    {
+      id: 260,
+      name: "plx_260",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145328/eaa494b516498561504e36414d7cde35-removebg-preview_xlwyke.png",
+      category: "art"
+    },
+    {
+      id: 261,
+      name: "plx_261",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145328/ebcf994eb0fd9b8e7438ef05c2ab80ce-removebg-preview_ifqkah.png",
+      category: "art"
+    },
+    {
+      id: 262,
+      name: "plx_262",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145329/f325c7a325427eb6596b84103c3b7d43-removebg-preview_iphdyq.png",
+      category: "art"
+    },
+    {
+      id: 263,
+      name: "plx_263",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768145333/fcb63a3094b4cbef56a136d9ce11ba46-removebg-preview_mrwht8.png",
+      category: "art"
+    },
+    {
+      id: 264,
+      name: "plx_264",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146015/0a9173ac724b98ac9fd868bac0feafe6-removebg-preview_tcnkxs.png",
+      category: "art"
+    },
+    {
+      id: 265,
+      name: "plx_265",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146015/3f834c540a01569a16ad7db87ed736e2-removebg-preview_vvq9ij.png",
+      category: "art"
+    },
+    {
+      id: 266,
+      name: "plx_266",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146015/2ad107efa4d427d2a1a2fc53e115e4b9-removebg-preview_esqlhh.png",
+      category: "art"
+    },
+    {
+      id: 267,
+      name: "plx_267",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146015/454c34b3aae80bf32ddc4bdbf4741ff2-removebg-preview_uaxnfv.png",
+      category: "art"
+    },
+    {
+      id: 268,
+      name: "plx_268",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146016/64303fd0540ff50fd00975b6d1d5512d-removebg-preview_dyqdpq.png",
+      category: "art"
+    },
+    {
+      id: 269,
+      name: "plx_269",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146016/770b04dd9f199e3311099c8b3d35f50f-removebg-preview_ujiywo.png",
+      category: "art"
+    },
+    {
+      id: 270,
+      name: "plx_270",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146017/4e9901e2805eb7e8374d8f7a7093321f-removebg-preview_j9tm3n.png",
+      category: "art"
+    },
+    {
+      id: 271,
+      name: "plx_271",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146024/198434f71f55cefa86f854a2f58f75ec-removebg-preview_lbygoo.png",
+      category: "art"
+    },
+    {
+      id: 272,
+      name: "plx_272",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146024/295291dd0c122a4ec5e164ab962b626e-removebg-preview_ifjoui.png",
+      category: "art"
+    },
+    {
+      id: 273,
+      name: "plx_273",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146025/368242eb268dbee160ea1cd63e966d67-removebg-preview_fgynnk.png",
+      category: "art"
+    },
+    {
+      id: 274,
+      name: "plx_274",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146027/b0f881afe4df194ad2d9de4436d30efc-removebg-preview_cwo6g1.png",
+      category: "art"
+    },
+    {
+      id: 275,
+      name: "plx_275",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146028/b143df6439b5b589f30409b7142c1f95-removebg-preview_tuq9r8.png",
+      category: "art"
+    },
+    {
+      id: 276,
+      name: "plx_276",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146031/bd13da90740207c86f5b656524fdd44a-removebg-preview_iepi2s.png",
+      category: "art"
+    },
+    {
+      id: 277,
+      name: "plx_277",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146032/c3c1c3596bd6df2c536ab0a9b8beac0d-removebg-preview_tso4qk.png",
+      category: "art"
+    },
+    {
+      id: 278,
+      name: "plx_278",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146032/d26a700efe44d502311aee688d433522-removebg-preview_lbgosf.png",
+      category: "art"
+    },
+    {
+      id: 279,
+      name: "plx_279",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146034/d861d940cc207e279b17e79c229227da-removebg-preview_mjzxvu.png",
+      category: "art"
+    },
+    {
+      id: 280,
+      name: "plx_280",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146038/db6fc3dfa61ff63022921490a3344ebf-removebg-preview_rktnci.png",
+      category: "art"
+    },
+    {
+      id: 281,
+      name: "plx_281",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146039/de9002e5d20e19603b21ba00455b6141-removebg-preview_cvizmr.png",
+      category: "art"
+    },
+    {
+      id: 282,
+      name: "plx_282",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768146040/download__3_-removebg-preview_2_e0qe3r.png",
+      category: "art"
+    },
+    {
+      id: 283,
+      name: "plx_283",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147199/5be71fdfb612305d86ce05b1f5173e48-removebg-preview_rt83ua.png",
+      category: "art"
+    },
+    {
+      id: 284,
+      name: "plx_284",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147199/1a560ff9663485f36c8026e74dd8f282-removebg-preview_c52xq0.png",
+      category: "art"
+    },
+    {
+      id: 285,
+      name: "plx_285",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147200/8c477137c84e813d213c2157ee77cd94-removebg-preview_q1ulaw.png",
+      category: "art"
+    },
+    {
+      id: 286,
+      name: "plx_286",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147200/6a112f3ff0b1bfb30251742334b88035-removebg-preview_iweoik.png",
+      category: "art"
+    },
+    {
+      id: 287,
+      name: "plx_287",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147201/8f3252c551c3e43098b0b5753000ed77-removebg-preview_bjddhq.png",
+      category: "art"
+    },
+    {
+      id: 288,
+      name: "plx_288",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147206/9ff3eb13f2d6cb6616b41b4966ecca35-removebg-preview_uqohib.png",
+      category: "art"
+    },
+    {
+      id: 289,
+      name: "plx_289",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147206/9ff3eb13f2d6cb6616b41b4966ecca35-removebg-preview_uqohib.png",
+      category: "art"
+    },
+    {
+      id: 290,
+      name: "plx_290",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147208/12fa86eb451f8dc7e2e810b27edf5b40-removebg-preview_t8xxn6.png",
+      category: "art"
+    },
+    {
+      id: 291,
+      name: "plx_291",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147207/41e01f68477cfa5338ad0841ce760ebc-removebg-preview_khvvwn.png",
+      category: "art"
+    },
+    {
+      id: 292,
+      name: "plx_292",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147210/58cde8571d7063a48191c9ee70176dd4-removebg-preview_c7gt3h.png",
+      category: "art"
+    },
+    {
+      id: 293,
+      name: "plx_293",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147216/69f748a8ca166a7871ed79d19b87809b-removebg-preview_zrbktg.png",
+      category: "art"
+    },
+    {
+      id: 294,
+      name: "plx_294",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147217/73a756a928db09bc12f5a93c79e10117-removebg-preview_ouyvib.png",
+      category: "art"
+    },
+    {
+      id: 295,
+      name: "plx_295",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147220/94e98654f13e0b872db3a73d9d3bb9d6-removebg-preview_e7wbzi.png",
+      category: "art"
+    },
+    {
+      id: 296,
+      name: "plx_296",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147222/374becff3f5b4c413acb35a961a58c26-removebg-preview_icsdbc.png",
+      category: "art"
+    },
+    {
+      id: 297,
+      name: "plx_297",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147223/00264c07798dbc1330e35da52a55a8b7-removebg-preview_na3eol.png",
+      category: "art"
+    },
+    {
+      id: 298,
+      name: "plx_298",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147228/6856b13ca171e35d2a2ef8e796915797-removebg-preview_pboznp.png",
+      category: "art"
+    },
+    {
+      id: 299,
+      name: "plx_299",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147228/6856b13ca171e35d2a2ef8e796915797-removebg-preview_pboznp.png",
+      category: "art"
+    },
+    {
+      id: 300,
+      name: "plx_300",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147228/4073acf822f660dbf56ba4a425d6a693-removebg-preview_ajoswg.png",
+      category: "art"
+    },
+    {
+      id: 301,
+      name: "plx_301",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147230/8941b8827f5268568cc8acd6a1ff57c2-removebg-preview_knwip5.png",
+      category: "art"
+    },
+    {
+      id: 302,
+      name: "plx_302",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147233/26084af5b60dfde99b59d105713ed356-removebg-preview_wfnmit.png",
+      category: "art"
+    },
+    {
+      id: 303,
+      name: "plx_303",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147236/60075d7313291f4c432a65c4b51fb8b4-removebg-preview_dsojch.png",
+      category: "art"
+    },
+    {
+      id: 304,
+      name: "plx_304",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147236/95553de48ddc79421892547f6f128820-removebg-preview_iwojsg.png",
+      category: "art"
+    },
+    {
+      id: 305,
+      name: "plx_305",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147238/8461579db40ec23c886f45e7148e9831-removebg-preview_gkudn4.png",
+      category: "art"
+    },
+    {
+      id: 306,
+      name: "plx_306",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147240/440686559dcc17bc53453104901fdc81-removebg-preview_fbdoxo.png",
+      category: "art"
+    },
+    {
+      id: 307,
+      name: "plx_307",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147242/adef0ab08b8cf58c028455b5d191ac13-removebg-preview_yoncpm.png",
+      category: "art"
+    },
+    {
+      id: 308,
+      name: "plx_308",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147244/bb7ace7606dca3937b8b63c3052df9f5-removebg-preview_k4vmuj.png",
+      category: "art"
+    },
+    {
+      id: 309,
+      name: "plx_309",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147245/c18fb1bdc1c832dfd46802e3d09ccd1d-removebg-preview_z1u0th.png",
+      category: "art"
+    },
+    {
+      id: 310,
+      name: "plx_310",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147245/c18fb1bdc1c832dfd46802e3d09ccd1d-removebg-preview_z1u0th.png",
+      category: "art"
+    },
+    {
+      id: 311,
+      name: "plx_311",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147246/cf71fbc88bb4dbd6c1c7a203d16be40d-removebg-preview_fktziu.png",
+      category: "art"
+    },
+    {
+      id: 312,
+      name: "plx_312",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147247/dc0bc14fae4f2dd9763cbcaf5fad2767-removebg-preview_myymaa.png",
+      category: "art"
+    },
+    {
+      id: 313,
+      name: "plx_313",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147251/e4c8391c6136cf6e476724eb8f647828-removebg-preview_jxiybc.png",
+      category: "art"
+    },
+    {
+      id: 314,
+      name: "plx_314",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147251/download__5_-removebg-preview_rdkh4q.png",
+      category: "art"
+    },
+    {
+      id: 315,
+      name: "plx_315",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147252/f60fbdd103dcdd12e64cac34583cbd6d-removebg-preview_q8vvrs.png",
+      category: "art"
+    },
+    {
+      id: 316,
+      name: "plx_316",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147256/fcffa44d0ec1b0467af700bbc616d054-removebg-preview_xsp4iz.png",
+      category: "art"
+    },
+    {
+      id: 317,
+      name: "plx_317",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147252/e6672fa402e179225a6ca44ff59424ba-removebg-preview_zlncfs.png",
       category: "art"
     },
   ];
