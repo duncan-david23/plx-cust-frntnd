@@ -126,7 +126,7 @@ const CartPage = () => {
         navigate('/thank-you');
       } catch (error) {
         // Payment succeeded but order submission failed
-        toast.error('Payment succeeded but order submission failed. Contact support.');
+        toast.error('Payment succeeded but order submission failed.');
         console.error('Order submission error after payment:', error);
       }
     },
