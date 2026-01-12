@@ -13,7 +13,8 @@ import {
   ShoppingBag,
   CreditCard,
   Shield,
-  Mail
+  Mail,
+  MessageCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import OrdersSection from '../components/OrdersSection';
@@ -52,7 +53,7 @@ const AccountPage = () => {
     { id: 'profile', icon: <User className="w-5 h-5" />, label: 'Profile Settings', color: 'from-green-500 to-emerald-600' },
     { id: 'orders', icon: <Package className="w-5 h-5" />, label: 'My Orders', color: 'from-blue-500 to-purple-600' },
     { id: 'address', icon: <MapPin className="w-5 h-5" />, label: 'Addresses', color: 'from-amber-500 to-orange-600' },
-    // { id: 'contactus', icon: <Mail className="w-5 h-5" />, label: 'Contact Us', color: 'from-gray-500 to-gray-700' },
+    { id: 'contactus', icon: <MessageCircle className="w-5 h-5" />, label: 'Contact Us', color: 'from-green-500 to-green-700' },
     // { id: 'security', icon: <Shield className="w-5 h-5" />, label: 'Security', color: 'from-gray-500 to-gray-700' },
   ];
 
@@ -201,7 +202,7 @@ const AccountPage = () => {
               {activeTab === 'orders' && <OrdersSection />}
               {activeTab === 'profile' && <ProfileSection />}
               {activeTab === 'address' && <AddressSection />}
-              {/* {activeTab === 'contactus' && <ContactUs />} */}
+              {activeTab === 'contactus' && <ContactUs />}
             </AnimatePresence>
           </div>
         </div>

@@ -1,396 +1,137 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { 
-  MapPinIcon, 
-  PhoneIcon, 
-  EnvelopeIcon,
-  PaperAirplaneIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ClockIcon,
-  UserIcon,
-  EnvelopeOpenIcon,
-  ChatBubbleLeftRightIcon
-} from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
+import { MessageCircle, Smartphone, Globe, ExternalLink } from 'lucide-react';
 
 const ContactUs = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
-  const [submitMessage, setSubmitMessage] = useState('');
-  const [charCount, setCharCount] = useState(0);
-
-  useEffect(() => {
-    // Get user data from localStorage
-    const storedUsername = localStorage.getItem('username');
-    const storedEmail = localStorage.getItem('email') || localStorage.getItem('userEmail');
-    
-    if (storedUsername) {
-      setFormData(prev => ({
-        ...prev,
-        name: storedUsername,
-        email: storedEmail || ''
-      }));
-    }
-  }, []);
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
-    }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const [message, setMessage] = useState('');
+  const whatsappNumber = '+233556664343';
+  
+  // Create WhatsApp link
+  const createWhatsAppLink = (customMessage = '') => {
+    const text = customMessage || message || 'Hello PlangeX, I need assistance.';
+    const encodedText = encodeURIComponent(text);
+    return `https://wa.me/${whatsappNumber.replace('+', '')}?text=${encodedText}`;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    if (name === 'message') {
-      setCharCount(value.length);
-    }
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-    
-    try {
-      // Replace with your actual backend endpoint
-      const response = await axios.post('https://your-backend-api.com/contact', {
-        ...formData,
-        timestamp: new Date().toISOString(),
-        userId: localStorage.getItem('userId') || null
-      });
-      
-      if (response.status === 200 || response.status === 201) {
-        setSubmitStatus('success');
-        setSubmitMessage('Your message has been sent successfully!');
-        
-        // Clear form but keep user info
-        setFormData({
-          name: localStorage.getItem('username') || '',
-          email: localStorage.getItem('email') || localStorage.getItem('userEmail') || '',
-          subject: '',
-          message: ''
-        });
-        setCharCount(0);
-      }
-    } catch (error) {
-      setSubmitStatus('error');
-      setSubmitMessage(error.response?.data?.message || 'Failed to send message. Please try again later.');
-      console.error('Error submitting form:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const contactInfo = [
-    {
-      icon: <MapPinIcon className="w-6 h-6" />,
-      title: "Visit Our Office",
-      details: ["123 Business Street", "Suite 100, New York, NY 10001"],
-      description: "Feel free to visit us during business hours"
-    },
-    {
-      icon: <PhoneIcon className="w-6 h-6" />,
-      title: "Call Us",
-      details: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
-      description: "Mon - Fri, 9:00 AM - 6:00 PM EST"
-    },
-    {
-      icon: <EnvelopeIcon className="w-6 h-6" />,
-      title: "Email Us",
-      details: ["support@company.com", "sales@company.com"],
-      description: "We respond within 24 hours"
-    }
+  // Quick messages
+  const quickMessages = [
+    "Hello, I need help with my order",
+    "I have a question about a product",
+    "I need support with my account",
+    "Can you tell me about shipping?"
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full mb-6">
-            <ChatBubbleLeftRightIcon className="w-8 h-8 text-white" />
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
+      <p className="text-gray-600 mb-8">Get in touch with us via WhatsApp</p>
+      
+      {/* Simple Contact Card */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-3 bg-green-100 rounded-full">
+            <MessageCircle className="w-6 h-6 text-green-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Touch</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Have questions or need assistance? We're here to help! Send us a message and we'll respond as soon as possible.
-          </p>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">WhatsApp Support</h2>
+            <p className="text-gray-600">Chat with us directly</p>
+          </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Contact Information */}
-          <div className="lg:col-span-1 space-y-6">
-            {contactInfo.map((info, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                      {info.icon}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{info.title}</h3>
-                    {info.details.map((detail, idx) => (
-                      <p key={idx} className="text-gray-600 mb-1">{detail}</p>
-                    ))}
-                    <p className="text-sm text-gray-500 mt-2">{info.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Quick Stats */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-              <div className="flex items-center space-x-3 mb-4">
-                <ClockIcon className="w-6 h-6" />
-                <h3 className="text-lg font-semibold">Response Time</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-indigo-100">Average Response</span>
-                  <span className="font-semibold">Within 4 hours</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-indigo-100">Support Hours</span>
-                  <span className="font-semibold">24/7 Available</span>
-                </div>
-                <div className="pt-4 border-t border-indigo-400">
-                  <p className="text-sm text-indigo-200">
-                    Our support team is always ready to assist you with any questions or concerns.
-                  </p>
-                </div>
-              </div>
-            </div>
+        
+        {/* Phone Number Display */}
+        <div className="mb-6">
+          <p className="text-sm text-gray-500 mb-2">Our WhatsApp Number:</p>
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+            <span className="font-mono text-lg font-semibold">{whatsappNumber}</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(whatsappNumber)}
+              className="text-sm text-green-600 hover:text-green-700 font-medium"
+            >
+              Copy
+            </button>
           </div>
-
-          {/* Right Column - Contact Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-              <div className="mb-8">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <EnvelopeOpenIcon className="w-5 h-5 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Send us a Message</h2>
+        </div>
+        
+        {/* Quick Message Buttons */}
+        <div className="mb-6">
+          <p className="text-sm text-gray-500 mb-3">Quick messages:</p>
+          <div className="grid grid-cols-1 gap-2">
+            {quickMessages.map((msg, index) => (
+              <a
+                key={index}
+                href={createWhatsAppLink(msg)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-3 text-left transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">{msg}</span>
+                  <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-green-600" />
                 </div>
-                <p className="text-gray-600">
-                  Fill out the form below and we'll get back to you as soon as possible. All fields marked with * are required.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Status Messages */}
-                {submitStatus && (
-                  <div className={`rounded-xl p-4 border ${
-                    submitStatus === 'success' 
-                      ? 'bg-green-50 border-green-200 text-green-800' 
-                      : 'bg-red-50 border-red-200 text-red-800'
-                  }`}>
-                    <div className="flex items-center space-x-3">
-                      {submitStatus === 'success' ? (
-                        <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <ExclamationCircleIcon className="w-5 h-5 text-red-500" />
-                      )}
-                      <p className="font-medium">{submitMessage}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Name Field */}
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      <div className="flex items-center space-x-1">
-                        <UserIcon className="w-4 h-4" />
-                        <span>Full Name *</span>
-                      </div>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${
-                        errors.name 
-                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                          : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                      } focus:outline-none focus:ring-2 transition-colors`}
-                      placeholder="Enter your full name"
-                    />
-                    {errors.name && (
-                      <p className="mt-2 text-sm text-red-600">{errors.name}</p>
-                    )}
-                  </div>
-
-                  {/* Email Field */}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      <div className="flex items-center space-x-1">
-                        <EnvelopeIcon className="w-4 h-4" />
-                        <span>Email Address *</span>
-                      </div>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${
-                        errors.email 
-                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                          : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                      } focus:outline-none focus:ring-2 transition-colors`}
-                      placeholder="your.email@example.com"
-                    />
-                    {errors.email && (
-                      <p className="mt-2 text-sm text-red-600">{errors.email}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Subject Field */}
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      errors.subject 
-                        ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                        : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                    } focus:outline-none focus:ring-2 transition-colors`}
-                    placeholder="What is this regarding?"
-                  />
-                  {errors.subject && (
-                    <p className="mt-2 text-sm text-red-600">{errors.subject}</p>
-                  )}
-                </div>
-
-                {/* Message Field */}
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows="6"
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      errors.message 
-                        ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                        : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                    } focus:outline-none focus:ring-2 transition-colors resize-none`}
-                    placeholder="Please provide details about your inquiry..."
-                  />
-                  <div className="flex justify-between items-center mt-2">
-                    {errors.message ? (
-                      <p className="text-sm text-red-600">{errors.message}</p>
-                    ) : (
-                      <p className="text-sm text-gray-500">
-                        Minimum 10 characters required
-                      </p>
-                    )}
-                    <p className={`text-sm ${
-                      charCount < 10 ? 'text-gray-500' : 'text-green-600'
-                    }`}>
-                      {charCount} characters
-                    </p>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <div className="pt-6">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Sending Message...</span>
-                      </>
-                    ) : (
-                      <>
-                        <PaperAirplaneIcon className="w-5 h-5" />
-                        <span>Send Message</span>
-                      </>
-                    )}
-                  </button>
-                  
-                  <p className="text-sm text-gray-500 mt-4 text-center md:text-left">
-                    By submitting this form, you agree to our privacy policy. We'll never share your information.
-                  </p>
-                </div>
-              </form>
-
-              {/* Additional Info */}
-              
+              </a>
+            ))}
+          </div>
+        </div>
+        
+        {/* Custom Message */}
+        <div className="mb-6">
+          <p className="text-sm text-gray-500 mb-3">Or write your own message:</p>
+          <div className="space-y-3">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message here..."
+              className="w-full p-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none"
+              rows="3"
+            />
+            <a
+              href={createWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`block w-full py-3 text-center font-medium rounded-lg transition-colors ${
+                message.trim()
+                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Open WhatsApp to Send
+            </a>
+          </div>
+        </div>
+        
+        {/* Instructions */}
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5">
+              <Globe className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h4 className="font-medium text-blue-900 mb-1">How it works:</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Click any message button above</li>
+                <li>• WhatsApp will open automatically (app or web)</li>
+                <li>• Your message will be pre-filled</li>
+                <li>• Just tap send to start chatting!</li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Alternative Contact */}
+      {/* <div className="text-center text-gray-500 text-sm">
+        <p>Prefer email? Contact us at <span className="text-green-600">support@plangex.com</span></p>
+      </div> */}
+      
+      {/* Floating WhatsApp Button (Simple Version) */}
+      <a
+        href={createWhatsAppLink()}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-xl flex items-center gap-2 transition-all hover:scale-110 z-40 group"
+      >
+        <MessageCircle className="w-6 h-6" />
+        <span className="hidden sm:inline text-sm font-medium group-hover:pr-2">Chat with us</span>
+      </a>
     </div>
   );
 };
