@@ -1892,13 +1892,31 @@ export const designTemplates =[
     {
       id: 316,
       name: "plx_316",
-      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147256/fcffa44d0ec1b0467af700bbc616d054-removebg-preview_xsp4iz.png",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768420592/IMG-0363-removebg-preview_eqgiu9.png",
       category: "art"
     },
     {
       id: 317,
       name: "plx_317",
-      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768147252/e6672fa402e179225a6ca44ff59424ba-removebg-preview_zlncfs.png",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768420708/6cd850ee212dce727f9f7ad6423a401d-removebg-preview_hktdna.png",
+      category: "art"
+    },
+    {
+      id: 318,
+      name: "plx_318",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768420708/e82636d430c0a1a8724b77c1a1eea329-removebg-preview_cizko3.png",
+      category: "art"
+    },
+    {
+      id: 319,
+      name: "plx_319",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768420710/52c6dcb1dce6bab9c482392d3f6a0c2b-removebg-preview_pcyoxh.png",
+      category: "art"
+    },
+    {
+      id: 320,
+      name: "plx_320",
+      image: "https://res.cloudinary.com/dxu2myqmz/image/upload/v1768420711/ea37afa951042be627fb33e33c81c0a0-removebg-preview_ociskc.png",
       category: "art"
     },
   ];
