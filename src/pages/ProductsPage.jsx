@@ -733,7 +733,7 @@ const ProductsPage = () => {
               
               {/* Mobile Store Button */}
               <button
-                onClick={() => navigate('/store')}
+                onClick={() => window.open('https://store.plangex.com/store', '_blank')}
                 className="ml-2 flex items-center space-x-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-2 rounded-lg text-sm font-medium"
               >
                 <Store className="w-4 h-4" />
