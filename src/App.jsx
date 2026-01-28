@@ -12,11 +12,11 @@ import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword';
 import AccountPage from './pages/AccountPage';
+
 import AuthWrapper from './components/AuthWrapper'
 import { useLocation } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 import { UserProvider } from './context/UserContext'
-
 
 
 
@@ -77,6 +77,7 @@ const location = useLocation()
               <ThankYou />
               </AuthWrapper>
               } />
+           
 
             {/* You can add more routes later for checkout and order confirmation */}
           </Routes>
