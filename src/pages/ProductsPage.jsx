@@ -21,7 +21,8 @@ import {
   MessageCircle,
   Store,
   Sparkles,
-  Package
+  Package,
+  Motorbike
 } from 'lucide-react';
 
 const ProductsPage = () => {
@@ -107,7 +108,7 @@ const ProductsPage = () => {
               ? product.product_sizes 
               : (product.product_sizes || 'S,M,L').split(',').map(s => s.trim()),
             description: product.product_description || product.description || '',
-            deliveryTime: '2-4 weeks',
+            deliveryTime: '2-4 days',
             stock: parseInt(product.product_stock || product.stock || 0),
             sku: product.skuid || product.sku || '',
             colors: product.product_colors || [],
@@ -411,8 +412,8 @@ const ProductsPage = () => {
                       <span>{product.stock > 0 ? `${product.stock} available` : 'Out of stock'}</span>
                     </div>
                     <div className="flex items-center space-x-1 text-gray-500">
-                      <Truck className="w-4 h-4" />
-                      <span>2-4 weeks</span>
+                      <Motorbike className="w-4 h-4" />
+                      <span>2-4 days</span>
                     </div>
                   </div>
                 </div>
