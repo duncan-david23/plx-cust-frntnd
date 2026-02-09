@@ -62,10 +62,10 @@ const UnifiedCustomerOrders = () => {
 
       // Define endpoints
       const endpoints = [
-        {
-          url: `https://plx-bckend.onrender.com/api/users/custom-orders?page=${pagination.current_page}&limit=${pagination.per_page}`,
-          type: 'custom'
-        },
+        // {
+        //   url: `https://plx-bckend.onrender.com/api/users/custom-orders?page=${pagination.current_page}&limit=${pagination.per_page}`,
+        //   type: 'custom'
+        // },
         {
           url: `https://plx-bckend.onrender.com/api/users/orders?page=${pagination.current_page}&limit=${pagination.per_page}`,
           type: 'store'
