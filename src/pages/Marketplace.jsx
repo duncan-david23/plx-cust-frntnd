@@ -278,7 +278,7 @@ export default function Marketplace() {
           right: -20%;
           width: 600px;
           height: 600px;
-          background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%);
           border-radius: 50%;
           pointer-events: none;
         }
@@ -324,7 +324,7 @@ export default function Marketplace() {
           margin-bottom: 12px;
         }
         .hero-section h1 span {
-          background: linear-gradient(135deg, #d4af37, #b8960f);
+          background: linear-gradient(135deg, #22c55e, #16a34a);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -354,9 +354,9 @@ export default function Marketplace() {
           color: rgba(255,255,255,0.6);
         }
         .hero-tag.highlight {
-          background: rgba(212,175,55,0.1);
-          border-color: rgba(212,175,55,0.2);
-          color: #d4af37;
+          background: rgba(34,197,94,0.1);
+          border-color: rgba(34,197,94,0.2);
+          color: #22c55e;
         }
         .hero-stats {
           display: flex;
@@ -411,8 +411,8 @@ export default function Marketplace() {
           color: rgba(26,26,26,0.3);
         }
         .search-wrap input:focus {
-          border-color: rgba(212,175,55,0.3);
-          box-shadow: 0 0 0 4px rgba(212,175,55,0.06);
+          border-color: rgba(34,197,94,0.3);
+          box-shadow: 0 0 0 4px rgba(34,197,94,0.06);
         }
         .search-wrap .icon {
           position: absolute;
@@ -437,7 +437,7 @@ export default function Marketplace() {
           box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
         .filter-select:focus {
-          border-color: rgba(212,175,55,0.3);
+          border-color: rgba(34,197,94,0.3);
         }
 
         /* sticky bar */
@@ -466,7 +466,7 @@ export default function Marketplace() {
           letter-spacing: -0.02em;
         }
         .sticky-bar .sticky-label span {
-          color: #d4af37;
+          color: #22c55e;
         }
         .sticky-search { flex: 1; }
         .sticky-search .search-wrap input {
@@ -506,7 +506,7 @@ export default function Marketplace() {
           gap: 10px;
         }
         .section-title .crown-icon {
-          color: #d4af37;
+          color: #22c55e;
         }
         .section-count {
           font-size: 0.75rem;
@@ -518,7 +518,7 @@ export default function Marketplace() {
         }
         .section-divider {
           height: 1px;
-          background: linear-gradient(90deg, rgba(212,175,55,0.2) 0%, transparent 100%);
+          background: linear-gradient(90deg, rgba(34,197,94,0.2) 0%, transparent 100%);
           margin-bottom: 28px;
           opacity: 0.6;
         }
@@ -532,7 +532,7 @@ export default function Marketplace() {
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: thin;
-          scrollbar-color: rgba(212,175,55,0.3) rgba(26,26,26,0.05);
+          scrollbar-color: rgba(34,197,94,0.3) rgba(26,26,26,0.05);
         }
         .featured-scroll::-webkit-scrollbar {
           height: 4px;
@@ -542,7 +542,7 @@ export default function Marketplace() {
           border-radius: 10px;
         }
         .featured-scroll::-webkit-scrollbar-thumb {
-          background: rgba(212,175,55,0.3);
+          background: rgba(34,197,94,0.3);
           border-radius: 10px;
         }
         .featured-scroll .product-card {
@@ -550,7 +550,7 @@ export default function Marketplace() {
           scroll-snap-align: start;
         }
         .featured-scroll .product-card .card-image-wrap {
-          border: 2px solid rgba(212,175,55,0.15);
+          border: 2px solid rgba(34,197,94,0.15);
         }
 
         /* regular grid */
@@ -573,7 +573,7 @@ export default function Marketplace() {
         }
         .product-card:hover {
           transform: translateY(-8px);
-          border-color: rgba(212,175,55,0.2);
+          border-color: rgba(34,197,94,0.2);
           box-shadow: 0 20px 40px rgba(0,0,0,0.06);
         }
         .card-image-wrap {
@@ -592,12 +592,12 @@ export default function Marketplace() {
         }
         .product-card:hover .card-image { transform: scale(1.05); }
         
-        /* Featured Badge - Enhanced Visibility */
+        /* Featured Badge - Bright Green */
         .badge-featured {
           position: absolute;
           top: 12px;
           left: 12px;
-          background: linear-gradient(135deg, #d4af37, #b8960f);
+          background: linear-gradient(135deg, #22c55e, #16a34a);
           color: #ffffff;
           font-size: 0.6rem;
           font-weight: 700;
@@ -608,7 +608,7 @@ export default function Marketplace() {
           align-items: center;
           gap: 6px;
           z-index: 2;
-          box-shadow: 0 2px 12px rgba(212,175,55,0.3);
+          box-shadow: 0 2px 12px rgba(34,197,94,0.3);
           text-transform: uppercase;
         }
         .badge-featured .crown-icon {
@@ -617,7 +617,7 @@ export default function Marketplace() {
 
         /* Modal Featured Badge */
         .modal-featured-badge {
-          background: linear-gradient(135deg, #d4af37, #b8960f);
+          background: linear-gradient(135deg, #22c55e, #16a34a);
           color: #ffffff;
           font-size: 0.65rem;
           font-weight: 700;
@@ -630,7 +630,7 @@ export default function Marketplace() {
           width: fit-content;
           letter-spacing: 0.5px;
           text-transform: uppercase;
-          box-shadow: 0 2px 12px rgba(212,175,55,0.2);
+          box-shadow: 0 2px 12px rgba(34,197,94,0.2);
         }
         .modal-featured-badge .crown-icon {
           color: #ffffff;
@@ -668,7 +668,7 @@ export default function Marketplace() {
           font-size: 0.6rem;
           text-transform: uppercase;
           letter-spacing: 1.5px;
-          color: #d4af37;
+          color: #22c55e;
           font-weight: 600;
           margin-bottom: 4px;
         }
@@ -719,10 +719,11 @@ export default function Marketplace() {
           font-size: 0.9rem;
           width: 100%;
           border-radius: 60px;
-          background: #d4af37;
+          background: #22c55e;
+          color: #ffffff;
         }
         .btn-buy-modal:hover {
-          background: #b8960f;
+          background: #16a34a;
         }
 
         .empty-state {
@@ -809,7 +810,7 @@ export default function Marketplace() {
           cursor: pointer;
           transition: 0.3s;
         }
-        .modal-thumb.active { border-color: #d4af37; }
+        .modal-thumb.active { border-color: #22c55e; }
         .modal-thumb:hover { opacity: 0.8; }
         .modal-info-side {
           padding: 32px 28px 28px;
@@ -822,7 +823,7 @@ export default function Marketplace() {
           font-size: 0.65rem;
           text-transform: uppercase;
           letter-spacing: 1.5px;
-          color: #d4af37;
+          color: #22c55e;
           font-weight: 600;
           margin-bottom: 6px;
         }
@@ -859,7 +860,7 @@ export default function Marketplace() {
           color: #1a1a1a;
         }
         .sparkle-icon {
-          color: #d4af37;
+          color: #22c55e;
         }
         .whatsapp-hint {
           font-size: 0.7rem;
@@ -1068,16 +1069,17 @@ export default function Marketplace() {
             <span className="hero-tag">direct trade</span>
           </div>
           <div className="hero-stats">
-            <div className="stat-item">
+            {/* <div className="stat-item">
               <div className="stat-num">{products.length}+</div>
               <div className="stat-label">styles</div>
             </div>
             <div className="stat-item">
               <div className="stat-num">
+                
                 {new Set(products.map(p => p.vendor?.id)).size}
               </div>
               <div className="stat-label">vendors</div>
-            </div>
+            </div> */}
             <div className="stat-item">
               <div className="stat-num">4.9★</div>
               <div className="stat-label">community</div>

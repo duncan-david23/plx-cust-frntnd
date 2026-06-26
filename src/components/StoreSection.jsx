@@ -12,7 +12,8 @@ import {
   Loader2,
   Eye,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  CheckCircle
 } from 'lucide-react';
 import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
@@ -24,10 +25,13 @@ const StoreSection = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsViewed, setTermsViewed] = useState(false);
   
   // Store setup form state
   const [storeForm, setStoreForm] = useState({
@@ -66,7 +70,6 @@ const StoreSection = () => {
 
       const accessToken = session.access_token;
       
-      // Fetch vendor profile from your API
       const response = await axios.get(
         "https://plx-bckend.onrender.com/api/users/vendor-profile",
         {
@@ -142,11 +145,27 @@ const StoreSection = () => {
     }
   };
 
+  const openTermsModal = () => {
+    setShowTermsModal(true);
+    setTermsViewed(true);
+  };
+
+  const acceptTerms = () => {
+    setTermsAccepted(true);
+    setShowTermsModal(false);
+  };
+
   const handleSetupStore = async () => {
     const { storeName, storeDescription, whatsapp } = storeForm;
 
     if (!storeName || !whatsapp) {
       setError("Store name and WhatsApp number are required");
+      return;
+    }
+
+    if (!termsAccepted) {
+      setError("You must agree to the Terms and Conditions before creating your store");
+      openTermsModal();
       return;
     }
 
@@ -169,7 +188,9 @@ const StoreSection = () => {
         {
           store_name: storeName,
           store_description: storeDescription,
-          store_phone: whatsapp
+          store_phone: whatsapp,
+          terms_accepted: true,
+          terms_accepted_at: new Date().toISOString()
         },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -362,7 +383,6 @@ const StoreSection = () => {
       
       console.log("✅ Product deleted successfully");
       
-      // Remove product from state
       setVendorData(prev => ({
         ...prev,
         products: prev.products.filter(p => p.id !== selectedProduct.id)
@@ -450,7 +470,7 @@ const StoreSection = () => {
               Open Your Store
             </h2>
             <p className="text-[14px] font-light text-[#666] tracking-[0.05em] leading-relaxed">
-              Create your presence and start selling<br />to customers worldwide
+              Create your presence and start selling<br />streetwear fashion to customers worldwide
             </p>
           </div>
           
@@ -469,7 +489,7 @@ const StoreSection = () => {
         {/* Setup Modal */}
         {showSetupModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">
-            <div className="bg-white w-full max-w-lg p-10 animate-[fadeIn_0.3s_ease-out]">
+            <div className="bg-white w-full max-w-lg p-10 animate-[fadeIn_0.3s_ease-out] max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <h3 className="text-[26px] font-light tracking-[-0.02em] text-[#1a1a1a]">
@@ -537,6 +557,38 @@ const StoreSection = () => {
                     className="w-full px-0 py-3 bg-transparent border-b border-[#e0e0e0] focus:border-[#1a1a1a] outline-none transition-colors text-[15px] font-light resize-none"
                   />
                 </div>
+
+                {/* Terms and Conditions Section */}
+                <div className="pt-4 border-t border-[#e0e0e0]">
+                  <div className="flex items-start gap-3">
+                    <button
+                      onClick={openTermsModal}
+                      className="mt-0.5 flex-shrink-0"
+                    >
+                      {termsAccepted ? (
+                        <CheckCircle className="w-5 h-5 text-[#2d8a4e]" strokeWidth={1.5} />
+                      ) : (
+                        <div className="w-5 h-5 border-2 border-[#999] rounded-full" />
+                      )}
+                    </button>
+                    <div>
+                      <p className="text-[13px] font-light text-[#666]">
+                        I agree to the{' '}
+                        <button
+                          onClick={openTermsModal}
+                          className="text-[#2d8a4e] hover:underline font-medium"
+                        >
+                          Terms and Conditions
+                        </button>
+                      </p>
+                      {termsAccepted && (
+                        <p className="text-[11px] font-light text-[#2d8a4e] mt-1">
+                          ✓ Terms accepted
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <button
@@ -546,6 +598,113 @@ const StoreSection = () => {
               >
                 {loading ? 'Creating...' : 'Create Store'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Terms and Conditions Modal */}
+        {showTermsModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">
+            <div className="bg-white w-full max-w-2xl p-10 animate-[fadeIn_0.3s_ease-out] max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-[26px] font-light tracking-[-0.02em] text-[#1a1a1a]">
+                    Terms & Conditions
+                  </h3>
+                  <p className="text-[13px] font-light text-[#666] mt-1 tracking-[0.05em]">
+                    Please read carefully before proceeding
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowTermsModal(false);
+                  }}
+                  className="p-2 hover:bg-[#f5f5f5] transition-colors"
+                >
+                  <X className="w-5 h-5 text-[#1a1a1a]" strokeWidth={1} />
+                </button>
+              </div>
+
+              <div className="space-y-4 text-[14px] font-light text-[#444] leading-relaxed">
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-700 font-medium text-[13px]">
+                    ⚠️ Important: Streetwear Fashion Only
+                  </p>
+                  <p className="text-red-600 text-[13px] mt-1">
+                    This platform is exclusively for streetwear fashion clothing. 
+                    Any products outside of streetwear fashion will result in 
+                    <strong> permanent account deletion</strong> without warning.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-[#1a1a1a] mb-2">1. Platform Purpose</h4>
+                  <p className="text-[13px]">
+                    PlangeX Marketplace is a dedicated marketplace for streetwear fashion. 
+                    This includes hoodies, t-shirts, jerseys, caps, sweatshirts, 
+                    and related streetwear apparel. By creating a store, you agree 
+                    to list only streetwear fashion items.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-[#1a1a1a] mb-2">2. Prohibited Items</h4>
+                  <p className="text-[13px]">
+                    The following items are strictly prohibited and will result in 
+                    immediate account termination:
+                  </p>
+                  <ul className="list-disc pl-5 mt-2 text-[13px] space-y-1">
+                    <li>Non-fashion items (electronics, furniture, etc.)</li>
+                    <li>Items that violate intellectual property rights</li>
+                    <li>Illegal or restricted items</li>
+                    <li>Items not related to streetwear fashion</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-[#1a1a1a] mb-2">3. Account Verification</h4>
+                  <p className="text-[13px]">
+                    All vendors must provide accurate information including store name 
+                    and WhatsApp number. PlangeX reserves the right to verify any 
+                    store and its products at any time.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-[#1a1a1a] mb-2">4. Product Quality</h4>
+                  <p className="text-[13px]">
+                    All products must be accurately described with clear images. 
+                    Misleading product listings will result in account suspension.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-[#1a1a1a] mb-2">5. Termination Policy</h4>
+                  <p className="text-[13px]">
+                    Violation of these terms, especially listing non-streetwear items, 
+                    will result in <strong>permanent account deletion</strong> with 
+                    no possibility of reinstatement.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-[#e0e0e0] flex gap-4">
+                <button
+                  onClick={() => {
+                    setShowTermsModal(false);
+                    setTermsAccepted(false);
+                  }}
+                  className="flex-1 py-3 border border-[#e0e0e0] hover:bg-[#f5f5f5] text-[#666] text-[13px] font-light tracking-[0.1em] transition-colors"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={acceptTerms}
+                  className="flex-1 py-3 bg-[#2d8a4e] hover:bg-[#236b3d] text-white text-[13px] font-light tracking-[0.1em] transition-colors"
+                >
+                  Accept Terms
+                </button>
+              </div>
             </div>
           </div>
         )}
