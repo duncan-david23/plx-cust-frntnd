@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   CreditCard,
   Shield,
+  Store,
   Mail,
   MessageCircle
 } from 'lucide-react';
@@ -21,6 +22,7 @@ import OrdersSection from '../components/OrdersSection';
 import ProfileSection from '../components/ProfileSection';
 import AddressSection from '../components/AddressesSection';
 import ContactUs from '../components/ContactUs';
+import StoreSection from '../components/StoreSection';
 
 
 const AccountPage = () => {
@@ -50,11 +52,11 @@ const AccountPage = () => {
   };
 
   const sidebarItems = [
-    { id: 'profile', icon: <User className="w-5 h-5" />, label: 'Profile Settings', color: 'from-green-500 to-emerald-600' },
+    { id: 'profile', icon: <User className="w-5 h-5" />, label: 'Profile Settings', color: 'from-blue-500 to-emerald-600' },
     { id: 'orders', icon: <Package className="w-5 h-5" />, label: 'My Orders', color: 'from-blue-500 to-purple-600' },
     { id: 'address', icon: <MapPin className="w-5 h-5" />, label: 'Addresses', color: 'from-amber-500 to-orange-600' },
-    { id: 'contactus', icon: <MessageCircle className="w-5 h-5" />, label: 'Contact Us', color: 'from-green-500 to-green-700' },
-    // { id: 'security', icon: <Shield className="w-5 h-5" />, label: 'Security', color: 'from-gray-500 to-gray-700' },
+    { id: 'contactus', icon: <MessageCircle className="w-5 h-5" />, label: 'Contact Us', color: 'from-yellow-500 to-yellow-700' },
+    { id: 'store', icon: <Store className="w-5 h-5 text-white" />, label: 'My Store', color: 'from-green-500 to-emerald-600' },
   ];
 
 
@@ -195,6 +197,7 @@ const AccountPage = () => {
                 {activeTab === 'profile' && 'Profile Settings'}
                 {activeTab === 'address' && 'Address Book'}
                 {/* {activeTab === 'contactus' && 'Contact Us'} */}
+                {activeTab === 'store' && 'My Store'}
               </h1>
             </div>
 
@@ -203,6 +206,7 @@ const AccountPage = () => {
               {activeTab === 'profile' && <ProfileSection />}
               {activeTab === 'address' && <AddressSection />}
               {activeTab === 'contactus' && <ContactUs />}
+              {activeTab === 'store' && <StoreSection />}
             </AnimatePresence>
           </div>
         </div>

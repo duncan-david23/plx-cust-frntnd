@@ -234,6 +234,7 @@ const ProductsPage = () => {
       animate={{ opacity: 1, y: 0 }}
       className="group cursor-pointer border border-gray-100 p-[20px] rounded-lg"
       onClick={() => setSelectedProduct(product)}
+      style={{ backgroundColor: '#f5f5f5' }}
     >
       {/* Stock indicator */}
       {product.stock < 10 && product.stock > 0 && (
@@ -362,7 +363,7 @@ const ProductsPage = () => {
             <div className="grid lg:grid-cols-2 gap-8 p-8">
               {/* Product Images */}
               <div className="space-y-4">
-                <div className="relative rounded-xl overflow-hidden bg-gray-50">
+                <div className="relative rounded-xl overflow-hidden " style={{ backgroundColor: '#f5f5f5' }}>
                   <img
                     src={productImages[activeImageIndex]}
                     alt={product.name}
@@ -668,13 +669,13 @@ const ProductsPage = () => {
               </div>
 
               {/* Visit Custom Store Button */}
-              {/* <button
-                onClick={() => window.open('https://store.plangex.com/store', '_blank')}
-                className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+              <button
+                onClick={() => navigate('/marketplace')}
+                className=" md:flex items-center space-x-2 bg-gray-800 cursor-pointer text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>Visit Store</span>
-              </button> */}
+                <Store className="w-4 h-4" />
+                <span className='hidden md:block'>Marketplace</span>
+              </button>
               
               {/* Cart Button with Count */}
               <button 
@@ -733,13 +734,13 @@ const ProductsPage = () => {
               </div>
               
               {/* Mobile Store Button */}
-              <button
+              {/* <button
                 onClick={() => window.open('https://store.plangex.com/store', '_blank')}
                 className="ml-2 flex items-center space-x-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-2 rounded-lg text-sm font-medium"
               >
                 <Store className="w-4 h-4" />
                 <span>Store</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

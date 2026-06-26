@@ -17,6 +17,7 @@ import AuthWrapper from './components/AuthWrapper'
 import { useLocation } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 import { UserProvider } from './context/UserContext'
+import Marketplace from './pages/Marketplace';
 
 
 
@@ -75,6 +76,11 @@ const location = useLocation()
             <Route path="/thank-you" element={
               <AuthWrapper>
               <ThankYou />
+              </AuthWrapper>
+              } />
+            <Route path="/marketplace" element={
+              <AuthWrapper>
+              <Marketplace />
               </AuthWrapper>
               } />
            
