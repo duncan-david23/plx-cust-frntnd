@@ -84,8 +84,6 @@ const Modal = ({ product, onClose }) => {
     };
   }, [onClose]);
 
-  
-
   return (
     <div
       className="modal-overlay"
@@ -98,11 +96,13 @@ const Modal = ({ product, onClose }) => {
         </button>
         <div className="modal-inner">
           <div className="modal-image-side">
-            <img
-              src={images[activeImage] || firstImage}
-              alt={product.name}
-              className="modal-image-main"
-            />
+            <div className="modal-image-container">
+              <img
+                src={images[activeImage] || firstImage}
+                alt={product.name}
+                className="modal-image-main"
+              />
+            </div>
             {images.length > 1 && (
               <div className="modal-thumbnails">
                 {images.map((img, idx) => (
@@ -588,7 +588,8 @@ export default function Marketplace() {
           flex-shrink: 0;
         }
         .card-image {
-          width: 100%; height: 100%;
+          width: 100%; 
+          height: 100%;
           object-fit: cover;
           display: block;
           transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -793,12 +794,22 @@ export default function Marketplace() {
           gap: 8px;
           padding: 16px;
         }
-        .modal-image-main {
+        .modal-image-container {
           width: 100%;
           aspect-ratio: 1/1;
-          object-fit: cover;
-          border-radius: 12px;
           background: #ffffff;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .modal-image-main {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 12px;
+          padding: 12px;
         }
         .modal-thumbnails {
           display: flex;
@@ -812,6 +823,7 @@ export default function Marketplace() {
           border: 2px solid transparent;
           cursor: pointer;
           transition: 0.3s;
+          background: #ffffff;
         }
         .modal-thumb.active { border-color: #22c55e; }
         .modal-thumb:hover { opacity: 0.8; }
@@ -977,13 +989,16 @@ export default function Marketplace() {
             max-height: 95vh;
           }
           .modal-image-side {
-            padding: 8px;
-            max-height: 300px;
+            padding: 12px 12px 8px;
+            max-height: 350px;
+          }
+          .modal-image-container {
+            aspect-ratio: 1/1;
+            max-height: 280px;
           }
           .modal-image-main {
-            aspect-ratio: 1/1;
-            max-height: 220px;
-            border-radius: 8px;
+            max-height: 280px;
+            padding: 8px;
           }
           .modal-thumbnails { justify-content: center; }
           .modal-thumb {
@@ -1072,17 +1087,7 @@ export default function Marketplace() {
             <span className="hero-tag">direct trade</span>
           </div>
           <div className="hero-stats">
-            {/* <div className="stat-item">
-              <div className="stat-num">{products.length}+</div>
-              <div className="stat-label">styles</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-num">
-                
-                {new Set(products.map(p => p.vendor?.id)).size}
-              </div>
-              <div className="stat-label">vendors</div>
-            </div> */}
+           
             <div className="stat-item">
               <div className="stat-num">4.9★</div>
               <div className="stat-label">community</div>
