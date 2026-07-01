@@ -68,6 +68,7 @@ const ProductCard = ({ product, onOpenModal }) => {
 // ----- modal -----
 const Modal = ({ product, onClose }) => {
   const overlayRef = useRef(null);
+  const modalContentRef = useRef(null);
   const [activeImage, setActiveImage] = useState(0);
   const images = product.images || [];
   const firstImage = images.length > 0 ? images[0] : "https://via.placeholder.com/400x400?text=No+Image";
@@ -94,7 +95,7 @@ const Modal = ({ product, onClose }) => {
         <button className="modal-close" onClick={onClose}>
           <X size={20} />
         </button>
-        <div className="modal-inner">
+        <div className="modal-inner" ref={modalContentRef}>
           <div className="modal-image-side">
             <div className="modal-image-container">
               <img
@@ -770,8 +771,8 @@ export default function Marketplace() {
           top: 16px; right: 16px;
           z-index: 10;
           width: 36px; height: 36px;
-          background: rgba(26,26,26,0.06);
-          border: 1px solid rgba(26,26,26,0.08);
+          background: rgba(255,255,255,0.95);
+          border: 1px solid rgba(26,26,26,0.1);
           border-radius: 50%;
           color: #1a1a1a;
           cursor: pointer;
@@ -779,13 +780,19 @@ export default function Marketplace() {
           align-items: center;
           justify-content: center;
           transition: 0.3s;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .modal-close:hover { background: rgba(26,26,26,0.1); }
+        .modal-close:hover { background: rgba(255,255,255,1); transform: scale(1.05); }
         .modal-inner {
           display: grid;
           grid-template-columns: 1fr 1fr;
           overflow-y: auto;
           max-height: 90vh;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
+        }
+        .modal-inner::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
         }
         .modal-image-side {
           background: #f5f5f0;
@@ -833,6 +840,11 @@ export default function Marketplace() {
           flex-direction: column;
           background: #ffffff;
           overflow-y: auto;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
+        }
+        .modal-info-side::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
         }
         .modal-vendor {
           font-size: 0.65rem;
@@ -862,6 +874,7 @@ export default function Marketplace() {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          margin-top: auto;
         }
         .modal-price-row {
           display: flex;
@@ -974,10 +987,17 @@ export default function Marketplace() {
             font-size: 0.7rem;
           }
 
-          .modal-overlay { padding: 10px; align-items: flex-end; }
+          /* Mobile Modal - Full Screen with Scroll */
+          .modal-overlay { 
+            padding: 0; 
+            align-items: flex-end;
+          }
           .modal-card {
-            max-height: 95vh;
-            border-radius: 16px 16px 0 0;
+            max-height: 100vh;
+            height: 100vh;
+            max-width: 100%;
+            width: 100%;
+            border-radius: 0;
             animation: slideUpMobile 0.3s ease;
           }
           @keyframes slideUpMobile {
@@ -986,21 +1006,33 @@ export default function Marketplace() {
           }
           .modal-inner {
             grid-template-columns: 1fr;
-            max-height: 95vh;
+            max-height: 100vh;
+            height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .modal-inner::-webkit-scrollbar {
+            display: none;
           }
           .modal-image-side {
-            padding: 12px 12px 8px;
-            max-height: 350px;
+            padding: 16px 16px 8px;
+            max-height: 45vh;
+            flex-shrink: 0;
           }
           .modal-image-container {
             aspect-ratio: 1/1;
-            max-height: 280px;
+            max-height: 40vh;
+            min-height: 200px;
           }
           .modal-image-main {
-            max-height: 280px;
+            max-height: 40vh;
             padding: 8px;
           }
-          .modal-thumbnails { justify-content: center; }
+          .modal-thumbnails { 
+            justify-content: center;
+            padding-bottom: 4px;
+          }
           .modal-thumb {
             width: 44px;
             height: 44px;
@@ -1008,8 +1040,9 @@ export default function Marketplace() {
           }
           .modal-info-side {
             padding: 20px 18px 24px;
-            max-height: 60vh;
-            overflow-y: auto;
+            max-height: none;
+            flex: 1;
+            overflow-y: visible;
           }
           .modal-name { font-size: 1.2rem; }
           .modal-price { font-size: 1.5rem; }
@@ -1022,12 +1055,16 @@ export default function Marketplace() {
             font-size: 0.85rem;
           }
           .modal-close {
-            top: 10px;
-            right: 10px;
-            width: 32px;
-            height: 32px;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(26,26,26,0.1);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            z-index: 20;
           }
-          .modal-close svg { width: 18px; height: 18px; }
+          .modal-close svg { width: 20px; height: 20px; }
 
           .sticky-bar {
             padding: 8px 12px;
