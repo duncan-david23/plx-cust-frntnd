@@ -15,7 +15,8 @@ import {
   AlertCircle,
   CheckCircle,
   Crown,
-  Sparkles
+  Sparkles,
+  Clock
 } from 'lucide-react';
 import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
@@ -31,6 +32,7 @@ const StoreSection = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showRemoveFeaturedModal, setShowRemoveFeaturedModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -60,6 +62,25 @@ const StoreSection = () => {
     description: ''
   });
 
+  // Helper function to check if product is still featured (not expired)
+  const isProductFeatured = (product) => {
+    if (!product.featured) return false;
+    if (!product.featured_expires_at) return true; // backward compatibility
+    const now = new Date();
+    const expiresAt = new Date(product.featured_expires_at);
+    return now < expiresAt;
+  };
+
+  // Helper function to get days remaining
+  const getDaysRemaining = (product) => {
+    if (!product.featured || !product.featured_expires_at) return null;
+    const now = new Date();
+    const expiresAt = new Date(product.featured_expires_at);
+    const diffTime = expiresAt - now;
+    if (diffTime <= 0) return 0;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
   // Fetch vendor data on mount
   useEffect(() => {
     fetchVendorData();
@@ -87,7 +108,7 @@ const StoreSection = () => {
         }
       );
       
-      console.log("✅ Vendor profile fetched:", response.data);
+   
 
       if (response.data && response.data.profile) {
         const profile = response.data.profile;
@@ -142,7 +163,7 @@ const StoreSection = () => {
         }
       );
 
-      console.log("✅ Vendor products fetched:", response.data);
+  
 
       if (response.data && response.data.products) {
         setVendorData(prev => ({
@@ -207,7 +228,7 @@ const StoreSection = () => {
         }
       );
       
-      console.log("✅ Store setup successful:", response.data);
+     
       
       setVendorData({
         hasStore: true,
@@ -261,7 +282,7 @@ const StoreSection = () => {
         }
       );
       
-      console.log("✅ Store updated successfully:", response.data);
+   
       
       setVendorData({
         ...vendorData,
@@ -330,7 +351,7 @@ const StoreSection = () => {
         }
       );
       
-      console.log("✅ Product published:", response.data);
+   
       
       const newProduct = response.data.product;
       
@@ -391,7 +412,7 @@ const StoreSection = () => {
         }
       );
       
-      console.log("✅ Product deleted successfully");
+      
       
       setVendorData(prev => ({
         ...prev,
@@ -411,9 +432,15 @@ const StoreSection = () => {
 
   // Handle promotion with payment
   const handlePromoteClick = (product) => {
-    if (product.featured) {
-      // If already featured, remove from featured directly
-      handlePromoteToFeatured(product);
+    // Check if product is still featured (not expired)
+    if (product.featured && isProductFeatured(product)) {
+      // If already featured and not expired, show confirmation modal
+      setSelectedProduct(product);
+      setShowRemoveFeaturedModal(true);
+    } else if (product.featured && !isProductFeatured(product)) {
+      // If featured but expired, treat as not featured - show payment modal
+      setPromotionData(product);
+      setShowPaymentModal(true);
     } else {
       // If not featured, show payment modal
       setPromotionData(product);
@@ -421,71 +448,96 @@ const StoreSection = () => {
     }
   };
 
-  // Actual promotion function
-  const handlePromoteToFeatured = async (product) => {
-    try {
-      setPromotingProduct(product.id);
-      setError(null);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setError("No active session. Please login again.");
-        setPromotingProduct(null);
-        return;
-      }
-
-      const accessToken = session.access_token;
-      
-      const newFeaturedStatus = !product.featured;
-      
-      const response = await axios.put(
-        `https://plx-bckend.onrender.com/api/users/update-product-featured/${product.id}`,
-        {
-          featured: newFeaturedStatus
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      
-      console.log("✅ Product featured status updated:", response.data);
-      
-      setVendorData(prev => ({
-        ...prev,
-        products: prev.products.map(p => 
-          p.id === product.id ? { ...p, featured: newFeaturedStatus } : p
-        )
-      }));
-      
-      setPromotingProduct(null);
-      setShowPaymentModal(false);
-      setPromotionData(null);
-      
-      toast.success(newFeaturedStatus ? 'Product promoted to featured!' : 'Product removed from featured');
-      
-    } catch (error) {
-      console.error("❌ Error updating featured status:", error.response?.data || error.message);
-      setError(error.response?.data?.error || "Failed to update featured status. Please try again.");
-      setPromotingProduct(null);
-    }
+  // Handle remove from featured confirmation
+  const handleConfirmRemoveFeatured = async () => {
+    if (!selectedProduct) return;
+    
+    // Close the modal first
+    setShowRemoveFeaturedModal(false);
+    
+    // Call the promotion function with fromPayment=false
+    await handlePromoteToFeatured(selectedProduct, false);
+    
+    // Clear selected product
+    setSelectedProduct(null);
   };
+
+  // Actual promotion function
+  const handlePromoteToFeatured = async (product, fromPayment = false) => {
+  try {
+    setPromotingProduct(product.id);
+    setError(null);
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      setError("No active session. Please login again.");
+      setPromotingProduct(null);
+      return;
+    }
+
+    const accessToken = session.access_token;
+    const newFeaturedStatus = !product.featured;
+    
+    const response = await axios.put(
+      `https://plx-bckend.onrender.com/api/users/vendor/update-product-featured/${product.id}`,
+      { featured: newFeaturedStatus },
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    
+ 
+    
+    // Update the product in state with the new data from server
+    setVendorData(prev => ({
+      ...prev,
+      products: prev.products.map(p => 
+        p.id === product.id ? { 
+          ...p, 
+          featured: response.data.product.featured,
+          featured_expires_at: response.data.product.featured_expires_at
+        } : p
+      )
+    }));
+    
+    setPromotingProduct(null);
+    setShowPaymentModal(false);
+    setPromotionData(null);
+    
+    // Only show toast if not from payment flow
+    if (!fromPayment) {
+      toast.success(newFeaturedStatus ? 'Product promoted to featured for 7 days!' : 'Product removed from featured');
+    }
+    
+  } catch (error) {
+    console.error("❌ Error updating featured status:", error.response?.data || error.message);
+    setError(error.response?.data?.error || "Failed to update featured status. Please try again.");
+    setPromotingProduct(null);
+    
+    if (!fromPayment) {
+      toast.error(error.response?.data?.error || "Failed to update featured status");
+    }
+  }
+};
 
   // Paystack payment success handler
-  const handlePaymentSuccess = async () => {
-    try {
-      toast.loading('Processing payment...');
-      
-      // After successful payment, promote the product
-      if (promotionData) {
-        await handlePromoteToFeatured(promotionData);
-        toast.success('Payment successful! Product is now featured.');
-      }
-    } catch (error) {
-      console.error("Error after payment:", error);
-      toast.error('Payment succeeded but failed to promote product. Please contact support.');
+ const handlePaymentSuccess = async () => {
+  let loadingToast = null;
+  
+  try {
+    loadingToast = toast.loading('Processing payment...');
+    
+    // After successful payment, promote the product
+    if (promotionData) {
+      await handlePromoteToFeatured(promotionData);
+      toast.dismiss(loadingToast);
+      toast.success('🎉 Payment successful! Product is now featured for 7 days!');
     }
-  };
+  } catch (error) {
+    console.error("Error after payment:", error);
+    if (loadingToast) toast.dismiss(loadingToast);
+    toast.error('Payment succeeded but failed to promote product. Please contact support.');
+  }
+};
 
   // Paystack payment close handler
   const handlePaymentClose = () => {
@@ -890,148 +942,234 @@ const StoreSection = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {vendorData.products.map((product) => (
-              <div
-                key={product.id}
-                className={`group bg-white hover:shadow-[0_2px_20px_rgba(0,0,0,0.06)] w-[280px] transition-all duration-300 overflow-hidden ${
-                  product.featured ? 'ring-2 ring-[#2d8a4e]' : 'border border-[#f0f0f0]'
-                }`}
-              >
-                <div className="relative aspect-square bg-[#f5f5f5] overflow-hidden">
-                  {product.item_images && product.item_images[0] ? (
-                    <img
-                      src={product.item_images[0]}
-                      alt={product.item_name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#f5f5f5]">
-                      <ImageIcon className="w-8 h-8 text-[#ccc]" strokeWidth={1} />
-                    </div>
-                  )}
-                  
-                  {/* Featured Badge */}
-                  {product.featured && (
-                    <div className="absolute top-3 left-3 bg-[#2d8a4e] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase flex items-center gap-1.5 z-10">
-                      <Crown className="w-3 h-3" />
-                      <span>Featured</span>
-                    </div>
-                  )}
-                  
-                  <div className="absolute top-3 right-3 bg-[#1a1a1a] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase z-10">
-                    {product.category || 'General'}
-                  </div>
-                  
-                  {/* Action buttons overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 px-4 z-20">
-                    <button
-                      onClick={() => handleViewProduct(product)}
-                      className="p-2.5 bg-white hover:bg-gray-100 transition-colors rounded-full"
-                      title="View product"
-                    >
-                      <Eye className="w-4 h-4 text-[#1a1a1a]" strokeWidth={1.5} />
-                    </button>
-                    
-                    {/* Promote to Featured Button - Black */}
-                    <button
-                      onClick={() => handlePromoteClick(product)}
-                      disabled={promotingProduct === product.id}
-                      className={`p-2.5 transition-colors rounded-full ${
-                        product.featured 
-                          ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
-                          : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
-                      }`}
-                      title={product.featured ? 'Remove from featured' : 'Promote to featured (₵50.00)'}
-                    >
-                      {promotingProduct === product.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Crown className="w-4 h-4" strokeWidth={1.5} />
-                      )}
-                    </button>
-                    
-                    <button
-                      onClick={() => handleDeleteProduct(product)}
-                      className="p-2.5 bg-white hover:bg-red-50 transition-colors rounded-full"
-                      title="Delete product"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" strokeWidth={1.5} />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-[14px] font-light text-[#1a1a1a] tracking-[-0.01em] truncate flex-1">
-                      {product.item_name}
-                    </h3>
-                    {product.featured && (
-                      <Sparkles className="w-3.5 h-3.5 text-[#2d8a4e] flex-shrink-0 mt-0.5" />
+            {vendorData.products.map((product) => {
+              const isFeatured = isProductFeatured(product);
+              const daysLeft = getDaysRemaining(product);
+              
+              return (
+                <div
+                  key={product.id}
+                  className={`group bg-white hover:shadow-[0_2px_20px_rgba(0,0,0,0.06)] w-[280px] transition-all duration-300 overflow-hidden ${
+                    isFeatured ? 'ring-2 ring-[#2d8a4e]' : 'border border-[#f0f0f0]'
+                  }`}
+                >
+                  <div className="relative aspect-square bg-[#f5f5f5] overflow-hidden">
+                    {product.item_images && product.item_images[0] ? (
+                      <img
+                        src={product.item_images[0]}
+                        alt={product.item_name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-[#f5f5f5]">
+                        <ImageIcon className="w-8 h-8 text-[#ccc]" strokeWidth={1} />
+                      </div>
                     )}
-                  </div>
-                  
-                  <p className="text-[18px] font-light text-[#1a1a1a] mt-1.5 tracking-[-0.01em]">
-                    ₵{product.item_price}
-                  </p>
-                  
-                  {product.item_sizes && product.item_sizes.length > 0 && product.item_sizes[0] !== 'One Size' && (
-                    <div className="flex flex-wrap gap-1.5 mt-2.5">
-                      {product.item_sizes.slice(0, 3).map((size, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5"
-                        >
-                          {size}
-                        </span>
-                      ))}
-                      {product.item_sizes.length > 3 && (
-                        <span className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5">
-                          +{product.item_sizes.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between mt-3.5 pt-3.5 border-t border-[#f0f0f0]">
-                    <button
-                      onClick={() => handlePromoteClick(product)}
-                      disabled={promotingProduct === product.id}
-                      className={`text-[10px] font-medium tracking-[0.1em] transition-colors uppercase flex items-center gap-1.5 px-3 py-1.5 rounded ${
-                        product.featured 
-                          ? 'bg-[#2d8a4e] text-white hover:bg-[#236b3d]' 
-                          : 'bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]'
-                      }`}
-                    >
-                      {promotingProduct === product.id ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Crown className="w-3 h-3" />
-                      )}
-                      {product.featured ? 'Featured' : 'Promote (₵50)'}
-                    </button>
                     
-                    <div className="flex items-center gap-2">
+                    {/* Featured Badge with Days Remaining */}
+                    {isFeatured && (
+                      <div className="absolute top-3 left-3 bg-[#2d8a4e] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase flex items-center gap-1.5 z-10">
+                        <Crown className="w-3 h-3" />
+                        <span>Featured</span>
+                        {daysLeft !== null && daysLeft > 0 && (
+                          <span className="text-[8px] opacity-80 ml-1 flex items-center gap-0.5">
+                            <Clock className="w-2.5 h-2.5" />
+                            {daysLeft}d left
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="absolute top-3 right-3 bg-[#1a1a1a] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase z-10">
+                      {product.category || 'General'}
+                    </div>
+                    
+                    {/* Action buttons overlay */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 px-4 z-20">
                       <button
                         onClick={() => handleViewProduct(product)}
-                        className="text-[10px] font-light text-[#1a1a1a] hover:text-[#666] tracking-[0.1em] transition-colors uppercase"
+                        className="p-2.5 bg-white hover:bg-gray-100 transition-colors rounded-full"
+                        title="View product"
                       >
-                        View
+                        <Eye className="w-4 h-4 text-[#1a1a1a]" strokeWidth={1.5} />
                       </button>
-                      <span className="text-[#e0e0e0] text-[10px]">|</span>
+                      
+                      {/* Promote to Featured Button - Black */}
+                      <button
+                        onClick={() => handlePromoteClick(product)}
+                        disabled={promotingProduct === product.id}
+                        className={`p-2.5 transition-colors rounded-full ${
+                          isFeatured 
+                            ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
+                            : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
+                        }`}
+                        title={isFeatured ? 'Remove from featured' : 'Promote to featured (₵50.00)'}
+                      >
+                        {promotingProduct === product.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Crown className="w-4 h-4" strokeWidth={1.5} />
+                        )}
+                      </button>
+                      
                       <button
                         onClick={() => handleDeleteProduct(product)}
-                        className="text-[10px] font-light text-red-500 hover:text-red-600 tracking-[0.1em] transition-colors uppercase"
+                        className="p-2.5 bg-white hover:bg-red-50 transition-colors rounded-full"
+                        title="Delete product"
                       >
-                        Delete
+                        <Trash2 className="w-4 h-4 text-red-500" strokeWidth={1.5} />
                       </button>
                     </div>
                   </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-[14px] font-light text-[#1a1a1a] tracking-[-0.01em] truncate flex-1">
+                        {product.item_name}
+                      </h3>
+                      {isFeatured && (
+                        <Sparkles className="w-3.5 h-3.5 text-[#2d8a4e] flex-shrink-0 mt-0.5" />
+                      )}
+                    </div>
+                    
+                    <p className="text-[18px] font-light text-[#1a1a1a] mt-1.5 tracking-[-0.01em]">
+                      ₵{product.item_price}
+                    </p>
+                    
+                    {product.item_sizes && product.item_sizes.length > 0 && product.item_sizes[0] !== 'One Size' && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5">
+                        {product.item_sizes.slice(0, 3).map((size, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5"
+                          >
+                            {size}
+                          </span>
+                        ))}
+                        {product.item_sizes.length > 3 && (
+                          <span className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5">
+                            +{product.item_sizes.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between mt-3.5 pt-3.5 border-t border-[#f0f0f0]">
+                      <button
+                        onClick={() => handlePromoteClick(product)}
+                        disabled={promotingProduct === product.id}
+                        className={`text-[10px] font-medium tracking-[0.1em] transition-colors uppercase flex items-center gap-1.5 px-3 py-1.5 rounded ${
+                          isFeatured 
+                            ? 'bg-[#2d8a4e] text-white hover:bg-[#236b3d]' 
+                            : 'bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]'
+                        }`}
+                      >
+                        {promotingProduct === product.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Crown className="w-3 h-3" />
+                        )}
+                        {isFeatured 
+                          ? `Featured${daysLeft ? ` (${daysLeft}d)` : ''}` 
+                          : 'Promote (₵50)'
+                        }
+                      </button>
+                      
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleViewProduct(product)}
+                          className="text-[10px] font-light text-[#1a1a1a] hover:text-[#666] tracking-[0.1em] transition-colors uppercase"
+                        >
+                          View
+                        </button>
+                        <span className="text-[#e0e0e0] text-[10px]">|</span>
+                        <button
+                          onClick={() => handleDeleteProduct(product)}
+                          className="text-[10px] font-light text-red-500 hover:text-red-600 tracking-[0.1em] transition-colors uppercase"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
+
+      {/* Remove from Featured Confirmation Modal */}
+      {showRemoveFeaturedModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
+          <div className="bg-white w-full max-w-md p-8 animate-[fadeIn_0.3s_ease-out] rounded-lg">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-yellow-600" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-light text-[#1a1a1a] mb-2">
+                Remove from Featured?
+              </h3>
+              <p className="text-[14px] font-light text-[#666]">
+                Are you sure you want to remove "{selectedProduct.item_name}" from featured products?
+              </p>
+              <p className="text-[13px] font-light text-[#999] mt-2">
+                This action can be undone by promoting the product again.
+              </p>
+            </div>
+
+            <div className="bg-[#f5f5f5] rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-3">
+                {selectedProduct.item_images && selectedProduct.item_images[0] ? (
+                  <img 
+                    src={selectedProduct.item_images[0]} 
+                    alt={selectedProduct.item_name}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-[#e0e0e0] rounded flex items-center justify-center">
+                    <Package className="w-6 h-6 text-[#999]" />
+                  </div>
+                )}
+                <div className="flex-1 text-left">
+                  <p className="text-[13px] font-medium text-[#1a1a1a]">{selectedProduct.item_name}</p>
+                  <p className="text-[11px] font-light text-[#666]">₵{selectedProduct.item_price}</p>
+                </div>
+                <div className="bg-[#2d8a4e] text-white text-[10px] font-light px-3 py-1 rounded-full flex items-center gap-1">
+                  <Crown className="w-3 h-3" />
+                  Featured
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowRemoveFeaturedModal(false);
+                  setSelectedProduct(null);
+                }}
+                className="flex-1 py-3 border border-[#e0e0e0] hover:bg-[#f5f5f5] text-[#666] text-[13px] font-light tracking-[0.1em] transition-colors rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmRemoveFeatured}
+                disabled={promotingProduct === selectedProduct.id}
+                className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white text-[13px] font-light tracking-[0.1em] transition-colors rounded flex items-center justify-center gap-2"
+              >
+                {promotingProduct === selectedProduct.id ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Removing...
+                  </>
+                ) : (
+                  'Yes, Remove'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Payment Modal */}
       {showPaymentModal && promotionData && (
@@ -1185,148 +1323,159 @@ const StoreSection = () => {
       )}
 
       {/* View Product Modal */}
-      {showViewModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">
-          <div className="bg-white w-full max-w-2xl p-10 animate-[fadeIn_0.3s_ease-out] max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-8">
+      {/* View Product Modal */}
+{showViewModal && selectedProduct && (() => {
+  const isFeatured = isProductFeatured(selectedProduct);
+  const daysLeft = getDaysRemaining(selectedProduct);
+  
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">
+      <div className="bg-white w-full max-w-2xl p-10 animate-[fadeIn_0.3s_ease-out] max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h3 className="text-[26px] font-light tracking-[-0.02em] text-[#1a1a1a]">
+              Product Details
+            </h3>
+            <p className="text-[13px] font-light text-[#666] mt-1 tracking-[0.05em]">
+              View product information
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setShowViewModal(false);
+              setSelectedProduct(null);
+            }}
+            className="p-2 hover:bg-[#f5f5f5] transition-colors"
+          >
+            <X className="w-5 h-5 text-[#1a1a1a]" strokeWidth={1} />
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Product Images */}
+          {selectedProduct.item_images && selectedProduct.item_images.length > 0 && (
+            <div className="grid grid-cols-3 gap-4">
+              {selectedProduct.item_images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Product ${index + 1}`}
+                  className="w-full aspect-square object-cover border border-[#e0e0e0]"
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Product Info */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                Product Name
+              </label>
+              <p className="text-[18px] font-light text-[#1a1a1a]">
+                {selectedProduct.item_name}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                Price
+              </label>
+              <p className="text-[18px] font-light text-[#1a1a1a]">
+                ₵{selectedProduct.item_price}
+              </p>
+            </div>
+
+            {selectedProduct.item_description && (
               <div>
-                <h3 className="text-[26px] font-light tracking-[-0.02em] text-[#1a1a1a]">
-                  Product Details
-                </h3>
-                <p className="text-[13px] font-light text-[#666] mt-1 tracking-[0.05em]">
-                  View product information
+                <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                  Description
+                </label>
+                <p className="text-[15px] font-light text-[#1a1a1a] leading-relaxed">
+                  {selectedProduct.item_description}
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  setShowViewModal(false);
-                  setSelectedProduct(null);
-                }}
-                className="p-2 hover:bg-[#f5f5f5] transition-colors"
-              >
-                <X className="w-5 h-5 text-[#1a1a1a]" strokeWidth={1} />
-              </button>
+            )}
+
+            <div>
+              <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                Category
+              </label>
+              <p className="text-[15px] font-light text-[#1a1a1a]">
+                {selectedProduct.category || 'General'}
+              </p>
             </div>
 
-            <div className="space-y-6">
-              {/* Product Images */}
-              {selectedProduct.item_images && selectedProduct.item_images.length > 0 && (
-                <div className="grid grid-cols-3 gap-4">
-                  {selectedProduct.item_images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Product ${index + 1}`}
-                      className="w-full aspect-square object-cover border border-[#e0e0e0]"
-                    />
+            {selectedProduct.item_sizes && selectedProduct.item_sizes.length > 0 && (
+              <div>
+                <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                  Sizes
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProduct.item_sizes.map((size, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[12px] font-light text-[#666] uppercase border border-[#e0e0e0] px-4 py-1.5"
+                    >
+                      {size}
+                    </span>
                   ))}
                 </div>
-              )}
-
-              {/* Product Info */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                    Product Name
-                  </label>
-                  <p className="text-[18px] font-light text-[#1a1a1a]">
-                    {selectedProduct.item_name}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                    Price
-                  </label>
-                  <p className="text-[18px] font-light text-[#1a1a1a]">
-                    ₵{selectedProduct.item_price}
-                  </p>
-                </div>
-
-                {selectedProduct.item_description && (
-                  <div>
-                    <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                      Description
-                    </label>
-                    <p className="text-[15px] font-light text-[#1a1a1a] leading-relaxed">
-                      {selectedProduct.item_description}
-                    </p>
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                    Category
-                  </label>
-                  <p className="text-[15px] font-light text-[#1a1a1a]">
-                    {selectedProduct.category || 'General'}
-                  </p>
-                </div>
-
-                {selectedProduct.item_sizes && selectedProduct.item_sizes.length > 0 && (
-                  <div>
-                    <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                      Sizes
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.item_sizes.map((size, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[12px] font-light text-[#666] uppercase border border-[#e0e0e0] px-4 py-1.5"
-                        >
-                          {size}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
-                    Status
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-flex items-center gap-2 text-[13px] font-light ${selectedProduct.featured ? 'text-[#2d8a4e]' : 'text-[#666]'}`}>
-                      <span className={`w-2 h-2 rounded-full ${selectedProduct.featured ? 'bg-[#2d8a4e]' : 'bg-[#999]'}`}></span>
-                      {selectedProduct.featured ? 'Featured' : 'Standard'}
-                    </span>
-                    {selectedProduct.featured && (
-                      <span className="text-[11px] font-light text-[#2d8a4e] bg-[#e8f5e9] px-3 py-1 rounded-full flex items-center gap-1">
-                        <Crown className="w-3 h-3" />
-                        Promoted
-                      </span>
-                    )}
-                  </div>
-                </div>
               </div>
-            </div>
+            )}
 
-            <div className="mt-8 pt-6 border-t border-[#f0f0f0] flex justify-end gap-3">
-              <button
-                onClick={() => handlePromoteClick(selectedProduct)}
-                className={`px-6 py-3 text-[13px] font-light tracking-[0.1em] transition-colors flex items-center gap-2 ${
-                  selectedProduct.featured 
-                    ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
-                    : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
-                }`}
-              >
-                <Crown className="w-4 h-4" />
-                {selectedProduct.featured ? 'Remove from Featured' : 'Promote to Featured (₵50)'}
-              </button>
-              <button
-                onClick={() => {
-                  setShowViewModal(false);
-                  setSelectedProduct(null);
-                }}
-                className="px-6 py-3 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white text-[13px] font-light tracking-[0.1em] transition-colors"
-              >
-                Close
-              </button>
+            <div>
+              <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
+                Status
+              </label>
+              <div className="flex items-center gap-3">
+                <span className={`inline-flex items-center gap-2 text-[13px] font-light ${isFeatured ? 'text-[#2d8a4e]' : 'text-[#666]'}`}>
+                  <span className={`w-2 h-2 rounded-full ${isFeatured ? 'bg-[#2d8a4e]' : 'bg-[#999]'}`}></span>
+                  {isFeatured ? 'Featured' : 'Standard'}
+                </span>
+                {isFeatured && daysLeft !== null && daysLeft > 0 && (
+                  <span className="text-[11px] font-light text-[#2d8a4e] bg-[#e8f5e9] px-3 py-1 rounded-full flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {daysLeft} days remaining
+                  </span>
+                )}
+                {selectedProduct.featured && !isFeatured && (
+                  <span className="text-[11px] font-light text-red-500 bg-red-50 px-3 py-1 rounded-full flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    Expired
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      )}
 
+        <div className="mt-8 pt-6 border-t border-[#f0f0f0] flex justify-end gap-3">
+          <button
+            onClick={() => handlePromoteClick(selectedProduct)}
+            className={`px-6 py-3 text-[13px] font-light tracking-[0.1em] transition-colors flex items-center gap-2 ${
+              isFeatured 
+                ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
+                : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
+            }`}
+          >
+            <Crown className="w-4 h-4" />
+            {isFeatured ? 'Remove from Featured' : 'Promote to Featured (₵50)'}
+          </button>
+          <button
+            onClick={() => {
+              setShowViewModal(false);
+              setSelectedProduct(null);
+            }}
+            className="px-6 py-3 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white text-[13px] font-light tracking-[0.1em] transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+})()}
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedProduct && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">

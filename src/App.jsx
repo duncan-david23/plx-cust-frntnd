@@ -31,7 +31,6 @@ function App() {
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
       navigate('/products');
-      console.log('User is logged in:', session.user)
     } else {
       // User is not logged in
       console.log('User is not logged in')
