@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import HomePage from './pages/Home';
 import ProductsPage from './pages/ProductsPage';
@@ -19,9 +19,28 @@ import toast, { Toaster } from 'react-hot-toast';
 import { UserProvider } from './context/UserContext'
 import Marketplace from './pages/Marketplace';
 
+import { supabase } from './lib/supabaseClient';
+
 
 
 function App() {
+
+  const navigate = useNavigate();
+
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      navigate('/products');
+      console.log('User is logged in:', session.user)
+    } else {
+      // User is not logged in
+      console.log('User is not logged in')
+    }
+  }
+
+useEffect(() => {
+    checkSession()
+  }, [])
 
 
 const location = useLocation()
