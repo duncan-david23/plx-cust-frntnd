@@ -68,7 +68,6 @@ const ProductCard = ({ product, onOpenModal }) => {
 // ----- modal -----
 const Modal = ({ product, onClose }) => {
   const overlayRef = useRef(null);
-  const modalContentRef = useRef(null);
   const [activeImage, setActiveImage] = useState(0);
   const images = product.images || [];
   const firstImage = images.length > 0 ? images[0] : "https://via.placeholder.com/400x400?text=No+Image";
@@ -95,7 +94,7 @@ const Modal = ({ product, onClose }) => {
         <button className="modal-close" onClick={onClose}>
           <X size={20} />
         </button>
-        <div className="modal-inner" ref={modalContentRef}>
+        <div className="modal-inner">
           <div className="modal-image-side">
             <div className="modal-image-container">
               <img
@@ -788,11 +787,11 @@ export default function Marketplace() {
           grid-template-columns: 1fr 1fr;
           overflow-y: auto;
           max-height: 90vh;
-          scrollbar-width: none; /* Firefox */
-          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
         .modal-inner::-webkit-scrollbar {
-          display: none; /* Chrome, Safari, Opera */
+          display: none;
         }
         .modal-image-side {
           background: #f5f5f0;
@@ -821,6 +820,7 @@ export default function Marketplace() {
         .modal-thumbnails {
           display: flex;
           gap: 8px;
+          flex-wrap: wrap;
         }
         .modal-thumb {
           width: 60px;
@@ -840,11 +840,11 @@ export default function Marketplace() {
           flex-direction: column;
           background: #ffffff;
           overflow-y: auto;
-          scrollbar-width: none; /* Firefox */
-          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
         .modal-info-side::-webkit-scrollbar {
-          display: none; /* Chrome, Safari, Opera */
+          display: none;
         }
         .modal-vendor {
           font-size: 0.65rem;
@@ -987,17 +987,17 @@ export default function Marketplace() {
             font-size: 0.7rem;
           }
 
-          /* Mobile Modal - Full Screen with Scroll */
+          /* Mobile Modal - Scrollable with hidden scrollbar */
           .modal-overlay { 
-            padding: 0; 
-            align-items: flex-end;
+            padding: 10px;
+            align-items: center;
           }
           .modal-card {
-            max-height: 100vh;
-            height: 100vh;
+            max-height: 95vh;
+            height: auto;
             max-width: 100%;
             width: 100%;
-            border-radius: 0;
+            border-radius: 16px;
             animation: slideUpMobile 0.3s ease;
           }
           @keyframes slideUpMobile {
@@ -1006,8 +1006,8 @@ export default function Marketplace() {
           }
           .modal-inner {
             grid-template-columns: 1fr;
-            max-height: 100vh;
-            height: 100vh;
+            max-height: 95vh;
+            height: auto;
             overflow-y: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -1017,21 +1017,22 @@ export default function Marketplace() {
           }
           .modal-image-side {
             padding: 16px 16px 8px;
-            max-height: 45vh;
+            max-height: 60vh;
             flex-shrink: 0;
           }
           .modal-image-container {
             aspect-ratio: 1/1;
-            max-height: 40vh;
-            min-height: 200px;
+            max-height: 55vh;
+            min-height: 250px;
           }
           .modal-image-main {
-            max-height: 40vh;
+            max-height: 55vh;
             padding: 8px;
           }
           .modal-thumbnails { 
             justify-content: center;
             padding-bottom: 4px;
+            flex-wrap: wrap;
           }
           .modal-thumb {
             width: 44px;
