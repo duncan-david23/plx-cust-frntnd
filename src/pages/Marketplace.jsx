@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import plangex_logo_black from '../assets/PlangeX_logo.png';
 import axios from "axios";
 import { Crown, Sparkles, ShoppingBag, Search, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES = ["All", "Hoodie", "Sweatshirt", "Cap", "Jersey", "T-Shirt"];
 
@@ -82,6 +83,8 @@ const Modal = ({ product, onClose }) => {
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  
 
   return (
     <div

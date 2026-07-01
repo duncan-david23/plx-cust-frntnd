@@ -669,14 +669,21 @@ const ProductsPage = () => {
               </div>
 
               {/* Visit Custom Store Button */}
-              <button
-                onClick={() => navigate('/marketplace')}
-                className=" md:flex items-center space-x-2 bg-gray-800 cursor-pointer text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
-                <Store className="w-4 h-4" />
-                <span className='hidden md:block'>Marketplace</span>
-              </button>
-              
+        <button
+  onClick={() => navigate('/marketplace')}
+  className="relative md:flex items-center space-x-2 bg-[#16a34a] cursor-pointer text-white px-4 py-2 rounded-lg font-medium 
+    hover:bg-[#15803d] transition-all duration-300
+    animate-glow-pulse-green
+    before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-r before:from-green-400 before:via-green-500 before:to-emerald-600 
+    before:opacity-0 before:blur-xl before:-z-10 before:transition-opacity before:duration-1000
+    hover:before:opacity-70
+    after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-r after:from-green-400 after:via-green-500 after:to-emerald-600 
+    after:opacity-0 after:-z-10 after:blur-2xl after:transition-opacity after:duration-1000
+    hover:after:opacity-50"
+>
+  <Store className="w-4 h-4 relative z-10" />
+  <span className='hidden md:block relative z-10'>Marketplace</span>
+</button>
               {/* Cart Button with Count */}
               <button 
                 onClick={() => navigate('/cart')}

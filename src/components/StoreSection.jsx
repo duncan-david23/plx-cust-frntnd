@@ -13,10 +13,14 @@ import {
   Eye,
   Trash2,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Crown,
+  Sparkles
 } from 'lucide-react';
 import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
+import { PaystackButton } from 'react-paystack';
+import toast from 'react-hot-toast';
 
 const StoreSection = () => {
   const [vendorData, setVendorData] = useState(null);
@@ -26,12 +30,18 @@ const StoreSection = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsViewed, setTermsViewed] = useState(false);
+  const [promotingProduct, setPromotingProduct] = useState(null);
+  const [promotionData, setPromotionData] = useState(null);
+
+  // Paystack configuration
+  const publicKey = 'pk_live_760359367d973660d1cd77f5f1954e00c0cc2e38';
   
   // Store setup form state
   const [storeForm, setStoreForm] = useState({
@@ -397,6 +407,109 @@ const StoreSection = () => {
       setError(error.response?.data?.error || "Failed to delete product. Please try again.");
       setLoading(false);
     }
+  };
+
+  // Handle promotion with payment
+  const handlePromoteClick = (product) => {
+    if (product.featured) {
+      // If already featured, remove from featured directly
+      handlePromoteToFeatured(product);
+    } else {
+      // If not featured, show payment modal
+      setPromotionData(product);
+      setShowPaymentModal(true);
+    }
+  };
+
+  // Actual promotion function
+  const handlePromoteToFeatured = async (product) => {
+    try {
+      setPromotingProduct(product.id);
+      setError(null);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setError("No active session. Please login again.");
+        setPromotingProduct(null);
+        return;
+      }
+
+      const accessToken = session.access_token;
+      
+      const newFeaturedStatus = !product.featured;
+      
+      const response = await axios.put(
+        `https://plx-bckend.onrender.com/api/users/update-product-featured/${product.id}`,
+        {
+          featured: newFeaturedStatus
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      
+      console.log("✅ Product featured status updated:", response.data);
+      
+      setVendorData(prev => ({
+        ...prev,
+        products: prev.products.map(p => 
+          p.id === product.id ? { ...p, featured: newFeaturedStatus } : p
+        )
+      }));
+      
+      setPromotingProduct(null);
+      setShowPaymentModal(false);
+      setPromotionData(null);
+      
+      toast.success(newFeaturedStatus ? 'Product promoted to featured!' : 'Product removed from featured');
+      
+    } catch (error) {
+      console.error("❌ Error updating featured status:", error.response?.data || error.message);
+      setError(error.response?.data?.error || "Failed to update featured status. Please try again.");
+      setPromotingProduct(null);
+    }
+  };
+
+  // Paystack payment success handler
+  const handlePaymentSuccess = async () => {
+    try {
+      toast.loading('Processing payment...');
+      
+      // After successful payment, promote the product
+      if (promotionData) {
+        await handlePromoteToFeatured(promotionData);
+        toast.success('Payment successful! Product is now featured.');
+      }
+    } catch (error) {
+      console.error("Error after payment:", error);
+      toast.error('Payment succeeded but failed to promote product. Please contact support.');
+    }
+  };
+
+  // Paystack payment close handler
+  const handlePaymentClose = () => {
+    toast.error('Payment cancelled');
+    setShowPaymentModal(false);
+    setPromotionData(null);
+  };
+
+  // Get user email for Paystack
+  const getUserEmail = () => {
+    return localStorage.getItem('userEmail') || 'customer@example.com';
+  };
+
+  // Paystack component props
+  const getPaystackProps = () => {
+    return {
+      email: getUserEmail(),
+      amount: 50 * 100, // ₵50.00 in pesewas
+      publicKey: publicKey,
+      currency: 'GHS',
+      text: 'Pay ₵50.00 to Promote',
+      onSuccess: handlePaymentSuccess,
+      onClose: handlePaymentClose,
+    };
   };
 
   const handleImageUpload = (e) => {
@@ -776,11 +889,13 @@ const StoreSection = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {vendorData.products.map((product) => (
               <div
                 key={product.id}
-                className="group bg-white hover:shadow-[0_2px_20px_rgba(0,0,0,0.04)] transition-all duration-500"
+                className={`group bg-white hover:shadow-[0_2px_20px_rgba(0,0,0,0.06)] w-[280px] transition-all duration-300 overflow-hidden ${
+                  product.featured ? 'ring-2 ring-[#2d8a4e]' : 'border border-[#f0f0f0]'
+                }`}
               >
                 <div className="relative aspect-square bg-[#f5f5f5] overflow-hidden">
                   {product.item_images && product.item_images[0] ? (
@@ -794,71 +909,118 @@ const StoreSection = () => {
                       <ImageIcon className="w-8 h-8 text-[#ccc]" strokeWidth={1} />
                     </div>
                   )}
-                  <div className="absolute top-4 right-4 bg-[#1a1a1a] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase">
+                  
+                  {/* Featured Badge */}
+                  {product.featured && (
+                    <div className="absolute top-3 left-3 bg-[#2d8a4e] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase flex items-center gap-1.5 z-10">
+                      <Crown className="w-3 h-3" />
+                      <span>Featured</span>
+                    </div>
+                  )}
+                  
+                  <div className="absolute top-3 right-3 bg-[#1a1a1a] text-white text-[10px] font-light tracking-[0.1em] px-3 py-1.5 uppercase z-10">
                     {product.category || 'General'}
                   </div>
                   
                   {/* Action buttons overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 px-4 z-20">
                     <button
                       onClick={() => handleViewProduct(product)}
-                      className="p-3 bg-white hover:bg-gray-100 transition-colors rounded-full"
+                      className="p-2.5 bg-white hover:bg-gray-100 transition-colors rounded-full"
                       title="View product"
                     >
-                      <Eye className="w-5 h-5 text-[#1a1a1a]" strokeWidth={1.5} />
+                      <Eye className="w-4 h-4 text-[#1a1a1a]" strokeWidth={1.5} />
                     </button>
+                    
+                    {/* Promote to Featured Button - Black */}
+                    <button
+                      onClick={() => handlePromoteClick(product)}
+                      disabled={promotingProduct === product.id}
+                      className={`p-2.5 transition-colors rounded-full ${
+                        product.featured 
+                          ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
+                          : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
+                      }`}
+                      title={product.featured ? 'Remove from featured' : 'Promote to featured (₵50.00)'}
+                    >
+                      {promotingProduct === product.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Crown className="w-4 h-4" strokeWidth={1.5} />
+                      )}
+                    </button>
+                    
                     <button
                       onClick={() => handleDeleteProduct(product)}
-                      className="p-3 bg-white hover:bg-red-50 transition-colors rounded-full"
+                      className="p-2.5 bg-white hover:bg-red-50 transition-colors rounded-full"
                       title="Delete product"
                     >
-                      <Trash2 className="w-5 h-5 text-red-500" strokeWidth={1.5} />
+                      <Trash2 className="w-4 h-4 text-red-500" strokeWidth={1.5} />
                     </button>
                   </div>
                 </div>
                 
-                <div className="p-5">
-                  <h3 className="text-[15px] font-light text-[#1a1a1a] tracking-[-0.01em] line-clamp-1">
-                    {product.item_name}
-                  </h3>
-                  <p className="text-[20px] font-light text-[#1a1a1a] mt-2 tracking-[-0.01em]">
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-[14px] font-light text-[#1a1a1a] tracking-[-0.01em] truncate flex-1">
+                      {product.item_name}
+                    </h3>
+                    {product.featured && (
+                      <Sparkles className="w-3.5 h-3.5 text-[#2d8a4e] flex-shrink-0 mt-0.5" />
+                    )}
+                  </div>
+                  
+                  <p className="text-[18px] font-light text-[#1a1a1a] mt-1.5 tracking-[-0.01em]">
                     ₵{product.item_price}
                   </p>
                   
                   {product.item_sizes && product.item_sizes.length > 0 && product.item_sizes[0] !== 'One Size' && (
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="flex flex-wrap gap-1.5 mt-2.5">
                       {product.item_sizes.slice(0, 3).map((size, idx) => (
                         <span
                           key={idx}
-                          className="text-[10px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-3 py-1"
+                          className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5"
                         >
                           {size}
                         </span>
                       ))}
                       {product.item_sizes.length > 3 && (
-                        <span className="text-[10px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-3 py-1">
+                        <span className="text-[9px] font-light text-[#666] tracking-[0.1em] uppercase border border-[#e0e0e0] px-2.5 py-0.5">
                           +{product.item_sizes.length - 3}
                         </span>
                       )}
                     </div>
                   )}
                   
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#f0f0f0]">
-                    <span className="text-[10px] font-light text-[#999] tracking-[0.1em] uppercase flex items-center gap-2">
-                      <ShoppingBag className="w-3 h-3" strokeWidth={1} />
-                      Available
-                    </span>
+                  <div className="flex items-center justify-between mt-3.5 pt-3.5 border-t border-[#f0f0f0]">
+                    <button
+                      onClick={() => handlePromoteClick(product)}
+                      disabled={promotingProduct === product.id}
+                      className={`text-[10px] font-medium tracking-[0.1em] transition-colors uppercase flex items-center gap-1.5 px-3 py-1.5 rounded ${
+                        product.featured 
+                          ? 'bg-[#2d8a4e] text-white hover:bg-[#236b3d]' 
+                          : 'bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]'
+                      }`}
+                    >
+                      {promotingProduct === product.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Crown className="w-3 h-3" />
+                      )}
+                      {product.featured ? 'Featured' : 'Promote (₵50)'}
+                    </button>
+                    
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleViewProduct(product)}
-                        className="text-[11px] font-light text-[#1a1a1a] hover:text-[#666] tracking-[0.1em] transition-colors uppercase"
+                        className="text-[10px] font-light text-[#1a1a1a] hover:text-[#666] tracking-[0.1em] transition-colors uppercase"
                       >
                         View
                       </button>
-                      <span className="text-[#e0e0e0]">|</span>
+                      <span className="text-[#e0e0e0] text-[10px]">|</span>
                       <button
                         onClick={() => handleDeleteProduct(product)}
-                        className="text-[11px] font-light text-red-500 hover:text-red-600 tracking-[0.1em] transition-colors uppercase"
+                        className="text-[10px] font-light text-red-500 hover:text-red-600 tracking-[0.1em] transition-colors uppercase"
                       >
                         Delete
                       </button>
@@ -870,6 +1032,72 @@ const StoreSection = () => {
           </div>
         )}
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && promotionData && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
+          <div className="bg-white w-full max-w-md p-8 animate-[fadeIn_0.3s_ease-out] rounded-lg">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-[#2d8a4e]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Crown className="w-8 h-8 text-[#2d8a4e]" />
+              </div>
+              <h3 className="text-2xl font-light text-[#1a1a1a] mb-2">
+                Promote to Featured
+              </h3>
+              <p className="text-[14px] font-light text-[#666]">
+               Get your product featured on the marketplace for just ₵50.00 for 7 days.
+              </p>
+            </div>
+
+            <div className="bg-[#f5f5f5] rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-3">
+                {promotionData.item_images && promotionData.item_images[0] ? (
+                  <img 
+                    src={promotionData.item_images[0]} 
+                    alt={promotionData.item_name}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-[#e0e0e0] rounded flex items-center justify-center">
+                    <Package className="w-6 h-6 text-[#999]" />
+                  </div>
+                )}
+                <div className="flex-1 text-left">
+                  <p className="text-[13px] font-medium text-[#1a1a1a]">{promotionData.item_name}</p>
+                  <p className="text-[11px] font-light text-[#666]">₵{promotionData.item_price}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between text-[14px] font-light text-[#666]">
+                <span>Promotion fee</span>
+                <span className="font-medium text-[#1a1a1a]">₵50.00</span>
+              </div>
+              <div className="border-t border-[#e0e0e0] pt-3 flex justify-between text-[16px] font-medium text-[#1a1a1a]">
+                <span>Total</span>
+                <span>₵50.00</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setPromotionData(null);
+                }}
+                className="flex-1 py-3 border border-[#e0e0e0] hover:bg-[#f5f5f5] text-[#666] text-[13px] font-light tracking-[0.1em] transition-colors rounded"
+              >
+                Cancel
+              </button>
+              <PaystackButton
+                {...getPaystackProps()}
+                className="flex-1 py-3 bg-[#2d8a4e] hover:bg-[#236b3d] text-white text-[13px] font-light tracking-[0.1em] transition-colors rounded cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Store Modal */}
       {showEditModal && (
@@ -1057,15 +1285,34 @@ const StoreSection = () => {
                   <label className="block text-[11px] font-light text-[#666] uppercase tracking-[0.15em] mb-1">
                     Status
                   </label>
-                  <span className="inline-flex items-center gap-2 text-[13px] font-light text-green-600">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Active
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex items-center gap-2 text-[13px] font-light ${selectedProduct.featured ? 'text-[#2d8a4e]' : 'text-[#666]'}`}>
+                      <span className={`w-2 h-2 rounded-full ${selectedProduct.featured ? 'bg-[#2d8a4e]' : 'bg-[#999]'}`}></span>
+                      {selectedProduct.featured ? 'Featured' : 'Standard'}
+                    </span>
+                    {selectedProduct.featured && (
+                      <span className="text-[11px] font-light text-[#2d8a4e] bg-[#e8f5e9] px-3 py-1 rounded-full flex items-center gap-1">
+                        <Crown className="w-3 h-3" />
+                        Promoted
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-[#f0f0f0] flex justify-end">
+            <div className="mt-8 pt-6 border-t border-[#f0f0f0] flex justify-end gap-3">
+              <button
+                onClick={() => handlePromoteClick(selectedProduct)}
+                className={`px-6 py-3 text-[13px] font-light tracking-[0.1em] transition-colors flex items-center gap-2 ${
+                  selectedProduct.featured 
+                    ? 'bg-[#2d8a4e] hover:bg-[#236b3d] text-white' 
+                    : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white'
+                }`}
+              >
+                <Crown className="w-4 h-4" />
+                {selectedProduct.featured ? 'Remove from Featured' : 'Promote to Featured (₵50)'}
+              </button>
               <button
                 onClick={() => {
                   setShowViewModal(false);
